@@ -769,7 +769,7 @@ class Hooks implements MulticastDebug
             return false;
           }
 
-          $obj_idx .= isset($this->filters[$tag][$priority]) ? count((array)$$this->filters[$tag][$priority]) : $filter_id_count;
+          $obj_idx .= isset($this->filters[$tag][$priority]) ? count((array)$this->filters[$tag][$priority]) : $filter_id_count;
           $function[0]->filter_id = $filter_id_count;
           ++$filter_id_count;
         }
