@@ -3,6 +3,7 @@
   "description": "A fork of the WordPress filters hook system rolled in to a class to be ported into any PHP-based system",
   "keywords": [
     "hook-system",
+    "filters-system",
     "hooks",
     "actions",
     "filters"
