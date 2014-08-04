@@ -1,0 +1,36 @@
+{
+  "name": "voku/PHP-Hooks",
+  "description": "A fork of the WordPress filters hook system rolled in to a class to be ported into any PHP-based system",
+  "keywords": [
+    "hook-system",
+    "hooks",
+    "actions",
+    "filters"
+  ],
+  "type": "library",
+  "homepage": "http://bainternet.github.io/PHP-Hooks/",
+  "license": "GNU General Public License (GPL) v3.0",
+  "authors": [
+    {
+      "name": "Ohad Raz",
+      "homepage": "https://github.com/bainternet",
+      "role": "Developer"
+    },
+    {
+      "name": "Lars Moelleken",
+      "homepage": "http://www.moelleken.org/",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/bainternet/PHP-Hooks/issues"
+  },
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "voku": "src"
+    }
+  }
+}

@@ -5,36 +5,39 @@ The PHP Hooks Class is a fork of the WordPress filters hook system rolled in to 
 *  This class is heavily based on the WordPress plugin API and most (if not all) of the code comes from there.
 
 
-Head Over to [http://bainternet.github.com/PHP-Hooks/][3] For more info
-
 ----------
 
 How to Use?
 =====
 
-Simple, Include the class file in your application bootstrap (setup/load/configuration or whatever you call it) and start hooking your filter and action hooks using the global `$hooks`. Ex:
+We start with a simple example ...
 
     <?php
-    include_once('php-hooks.php');
-    global $hooks;
+
+    $hooks = Hooks::getInstance();
+
     $hooks->add_action('header_action','echo_this_in_header');
     
     function echo_this_in_header(){
        echo 'this came from a hooked function';
     }
-    ?>
 
-then all that is left for you is to call the hooked function when you want anywhere in your aplication, EX:
+then all that is left for you is to call the hooked function when you want anywhere in your application, EX:
 
     <?php
+
+    $hooks = Hooks::getInstance();
+
     echo '<div id="extra_header">';
-    global $hooks;
     $hooks->do_action('header_action');
     echo '</div>';
-    ?>
 
 
 and you output will be: `< div id="extra_header">this came from a hooked function</div>`
+
+PS: you can also use method from a class for a hook e.g.:
+
+    $hooks->add_action('header_action', array($this, 'echo_this_in_header_via_method');
 
 Methods
 =======
@@ -127,7 +130,7 @@ Methods
      -  @param mixed $var,... Additional variables passed to the functions hooked to <tt>$tag</tt>.
      -  @return mixed The filtered value after all hooked functions are applied to it.
 
-There are a few more methods but these are the main Ones you'll use :).
+  There are a few more methods but these are the main ones you'll use :).
 
 Download
 ========
