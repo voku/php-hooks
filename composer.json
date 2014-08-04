@@ -1,5 +1,5 @@
 {
-  "name": "voku/PHP-Hooks",
+  "name": "voku/php-hooks",
   "description": "A fork of the WordPress filters hook system rolled in to a class to be ported into any PHP-based system",
   "keywords": [
     "hook-system",
@@ -8,7 +8,7 @@
     "filters"
   ],
   "type": "library",
-  "homepage": "http://bainternet.github.io/PHP-Hooks/",
+  "homepage": "http://github.com/voku/php-hooks/",
   "license": "GNU General Public License (GPL) v3.0",
   "authors": [
     {
@@ -23,7 +23,7 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/bainternet/PHP-Hooks/issues"
+    "issues": "https://github.com/voku/php-hooks/issues"
   },
   "require": {
     "php": ">=5.3.0"

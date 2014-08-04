@@ -37,8 +37,7 @@ if (!class_exists('Hooks')) {
   /**
    * Hooks
    *
-   * @since   1.0.0
-   * @package cms
+   * @package voku\helper
    */
   class Hooks
   {
