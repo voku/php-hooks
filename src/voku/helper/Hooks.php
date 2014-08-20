@@ -910,6 +910,10 @@ if (!class_exists('Hooks')) {
      */
     public function has_shortcode($content, $tag)
     {
+      if ( false === strpos( $content, '[' ) ) {
+		    return false;
+	    }
+	    
       if ($this->shortcode_exists($tag)) {
         preg_match_all('/' . $this->get_shortcode_regex() . '/s', $content, $matches, PREG_SET_ORDER);
         if (empty($matches)) {
@@ -919,7 +923,9 @@ if (!class_exists('Hooks')) {
         foreach ($matches as $shortcode) {
           if ($tag === $shortcode[2]) {
             return true;
-          }
+          } elseif ( isset( $shortcode[5] ) && has_shortcode( $shortcode[5], $tag ) ) {
+            return has_shortcode( $shortcode[5], $tag );
+          }  
         }
       }
 
