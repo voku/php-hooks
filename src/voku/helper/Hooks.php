@@ -588,8 +588,10 @@ if (!class_exists('Hooks')) {
       } else {
         $args[] = $arg;
       }
+      
+      $numArgs = func_num_args();
 
-      for ($a = 2; $a < func_num_args(); $a++) {
+      for ($a = 2; $a < $numArgs; $a++) {
         $args[] = func_get_arg($a);
       }
 
