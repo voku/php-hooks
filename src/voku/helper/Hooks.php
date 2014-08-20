@@ -826,12 +826,12 @@ if (!class_exists('Hooks')) {
      * <code>
      * // [bartag foo="bar"]
      * function bartag_func($atts) {
-     *  extract(shortcode_atts(array(
+     *  $args = shortcode_atts(array(
      *    'foo' => 'no foo',
      *    'baz' => 'default baz',
-     *  ), $atts));
+     *  ), $atts);
      *
-     *  return "foo = {$foo}";
+     *  return "foo = {$args['foo']}";
      * }
      * add_shortcode('bartag', 'bartag_func');
      * </code>
