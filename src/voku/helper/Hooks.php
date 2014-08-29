@@ -923,7 +923,7 @@ if (!class_exists('Hooks')) {
         foreach ($matches as $shortcode) {
           if ($tag === $shortcode[2]) {
             return true;
-          } elseif ( ! empty( $shortcode[5] ) && has_shortcode( $shortcode[5], $tag ) ) {
+          } elseif ( ! empty( $shortcode[5] ) && $this->has_shortcode( $shortcode[5], $tag ) ) {
             return true;
           }  
         }
