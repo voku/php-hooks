@@ -171,12 +171,9 @@ if (!class_exists('Hooks')) {
       $idx = $this->_filter_build_unique_id($tag, $function_to_add, $priority);
 
       $this->filters[$tag][$priority][$idx] = array(
-          'function'      => $function_to_add,
-          'accepted_args' => $accepted_args
+        'function'      => $function_to_add,
+        'accepted_args' => $accepted_args
       );
-
-      // DEBUG
-      //dump($this->filters, false);
 
       unset($this->merged_filters[$tag]);
 
@@ -275,10 +272,6 @@ if (!class_exists('Hooks')) {
       }
 
       foreach ((array)array_keys($this->filters[$tag]) as $priority) {
-
-        // DEBUG
-        //echo 'lall: ' . $tag . ' | ' . $priority . ' | ' . $idx . "\n<br>";
-
         if (isset($this->filters[$tag][$priority][$idx])) {
           return $priority;
         }
@@ -303,7 +296,6 @@ if (!class_exists('Hooks')) {
      */
     public function apply_filters($tag, $value)
     {
-      $debugOutput = false;
       $args = array();
 
       // Do 'all' actions first
@@ -337,37 +329,18 @@ if (!class_exists('Hooks')) {
         $args = func_get_args();
       }
 
-      if ($debugOutput === true) {
-        var_dump($this->filters[$tag]);
-      }
-
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
 
           if (!is_null($the_['function'])) {
-            // DEBUG
-            if ($debugOutput === true) {
-              echo 'call_user_func_array: before -> ' . $value . "\n<br>";
-            }
-
             $args[1] = $value;
             $value = call_user_func_array($the_['function'], array_slice($args, 1, (int)$the_['accepted_args']));
-
-            // DEBUG
-            if ($debugOutput === true) {
-              echo 'call_user_func_array: after -> ' . $value . "\n<br>";
-            }
           }
         }
       }
       while (next($this->filters[$tag]) !== false);
 
       array_pop($this->current_filter);
-
-      // DEBUG
-      if ($debugOutput === true) {
-        echo 'return: ' . $value . "\n<br>";
-      }
 
       return $value;
     }
@@ -382,12 +355,10 @@ if (!class_exists('Hooks')) {
      *
      * @return   mixed           The filtered value after all hooked functions are applied to it.
      *
-     * @param bool      $debugOutput
-     *
      * @access   public
      * @since    1.0.0
      */
-    public function apply_filters_ref_array($tag, $args, $debugOutput = false)
+    public function apply_filters_ref_array($tag, $args)
     {
       // Do 'all' actions first
       if (isset($this->filters['all'])) {
@@ -416,37 +387,16 @@ if (!class_exists('Hooks')) {
 
       reset($this->filters[$tag]);
 
-      if ($debugOutput === true) {
-        var_dump($this->filters[$tag]);
-      }
-
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
-
-          // DEBUG
-          if ($debugOutput === true) {
-            echo 'call_user_func_array: fefore -> ' . $args[0] . "\n<br>";
-          }
-
           if (!is_null($the_['function'])) {
             $args[0] = call_user_func_array($the_['function'], array_slice($args, 0, (int)$the_['accepted_args']));
           }
-
-          // DEBUG
-          if ($debugOutput === true) {
-            echo 'call_user_func_array: after -> ' . $args[0] . "\n<br>";
-          }
-
         }
       }
       while (next($this->filters[$tag]) !== false);
 
       array_pop($this->current_filter);
-
-      // DEBUG
-      if ($debugOutput === true) {
-        echo 'return: ' . $args[0] . "\n<br>";
-      }
 
       return $args[0];
     }
@@ -588,7 +538,7 @@ if (!class_exists('Hooks')) {
       } else {
         $args[] = $arg;
       }
-      
+
       $numArgs = func_num_args();
 
       for ($a = 2; $a < $numArgs; $a++) {
@@ -747,8 +697,8 @@ if (!class_exists('Hooks')) {
       if (is_object($function)) {
         // Closures are currently implemented as objects
         $function = array(
-            $function,
-            ''
+          $function,
+          ''
         );
       } else {
         $function = (array)$function;
@@ -911,9 +861,9 @@ if (!class_exists('Hooks')) {
     public function has_shortcode($content, $tag)
     {
       if ( false === strpos( $content, '[' ) ) {
-		    return false;
-	    }
-	    
+        return false;
+      }
+
       if ($this->shortcode_exists($tag)) {
         preg_match_all('/' . $this->get_shortcode_regex() . '/s', $content, $matches, PREG_SET_ORDER);
         if (empty($matches)) {
@@ -925,7 +875,7 @@ if (!class_exists('Hooks')) {
             return true;
           } elseif ( ! empty( $shortcode[5] ) && $this->has_shortcode( $shortcode[5], $tag ) ) {
             return true;
-          }  
+          }
         }
       }
 
@@ -954,10 +904,10 @@ if (!class_exists('Hooks')) {
       $pattern = $this->get_shortcode_regex();
 
       return preg_replace_callback(
-          "/$pattern/s", array(
-              $this,
-              'do_shortcode_tag'
-          ), $content
+        "/$pattern/s", array(
+          $this,
+          'do_shortcode_tag'
+        ), $content
       );
     }
 
@@ -988,34 +938,34 @@ if (!class_exists('Hooks')) {
       // WARNING! Do not change this regex without changing do_shortcode_tag() and strip_shortcode_tag()
       // Also, see shortcode_unautop() and shortcode.js.
       return
-          '\\[' // Opening bracket
-          . '(\\[?)' // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
-          . "($tagregexp)" // 2: Shortcode name
-          . '(?![\\w-])' // Not followed by word character or hyphen
-          . '(' // 3: Unroll the loop: Inside the opening shortcode tag
-          . '[^\\]\\/]*' // Not a closing bracket or forward slash
-          . '(?:'
-          . '\\/(?!\\])' // A forward slash not followed by a closing bracket
-          . '[^\\]\\/]*' // Not a closing bracket or forward slash
-          . ')*?'
-          . ')'
-          . '(?:'
-          . '(\\/)' // 4: Self closing tag ...
-          . '\\]' // ... and closing bracket
-          . '|'
-          . '\\]' // Closing bracket
-          . '(?:'
-          . '(' // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
-          . '[^\\[]*+' // Not an opening bracket
-          . '(?:'
-          . '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
-          . '[^\\[]*+' // Not an opening bracket
-          . ')*+'
-          . ')'
-          . '\\[\\/\\2\\]' // Closing shortcode tag
-          . ')?'
-          . ')'
-          . '(\\]?)'; // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
+        '\\[' // Opening bracket
+        . '(\\[?)' // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
+        . "($tagregexp)" // 2: Shortcode name
+        . '(?![\\w-])' // Not followed by word character or hyphen
+        . '(' // 3: Unroll the loop: Inside the opening shortcode tag
+        . '[^\\]\\/]*' // Not a closing bracket or forward slash
+        . '(?:'
+        . '\\/(?!\\])' // A forward slash not followed by a closing bracket
+        . '[^\\]\\/]*' // Not a closing bracket or forward slash
+        . ')*?'
+        . ')'
+        . '(?:'
+        . '(\\/)' // 4: Self closing tag ...
+        . '\\]' // ... and closing bracket
+        . '|'
+        . '\\]' // Closing bracket
+        . '(?:'
+        . '(' // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
+        . '[^\\[]*+' // Not an opening bracket
+        . '(?:'
+        . '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
+        . '[^\\[]*+' // Not an opening bracket
+        . ')*+'
+        . ')'
+        . '\\[\\/\\2\\]' // Closing shortcode tag
+        . ')?'
+        . ')'
+        . '(\\]?)'; // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
     }
 
     /**
@@ -1131,10 +1081,10 @@ if (!class_exists('Hooks')) {
        */
       if ($shortcode) {
         $out = $this->apply_filters(
-            array(
-                $this,
-                "shortcode_atts_{$shortcode}"
-            ), $out, $pairs, $atts
+          array(
+            $this,
+            "shortcode_atts_{$shortcode}"
+          ), $out, $pairs, $atts
         );
       }
 
@@ -1160,10 +1110,10 @@ if (!class_exists('Hooks')) {
       $pattern = $this->get_shortcode_regex();
 
       return preg_replace_callback(
-          "/$pattern/s", array(
-              $this,
-              'strip_shortcode_tag'
-          ), $content
+        "/$pattern/s", array(
+          $this,
+          'strip_shortcode_tag'
+        ), $content
       );
     }
 
