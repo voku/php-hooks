@@ -10,7 +10,7 @@
   ],
   "type": "library",
   "homepage": "http://github.com/voku/php-hooks/",
-  "license": "GNU General Public License v3.0 only",
+  "license": "GPL-3.0",
   "authors": [
     {
       "name": "Ohad Raz",
