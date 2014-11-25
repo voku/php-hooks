@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/voku/php-hooks.svg?branch=master)](https://travis-ci.org/voku/php-hooks)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/8ab3148c-61b5-4da6-be80-9018eb0b4441/mini.png)](https://insight.sensiolabs.com/projects/8ab3148c-61b5-4da6-be80-9018eb0b4441)
+
 PHP-Hooks
 =========
 
