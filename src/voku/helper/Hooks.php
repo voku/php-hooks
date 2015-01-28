@@ -14,13 +14,13 @@ namespace voku\helper;
  *
  * @version     0.2
  * @copyright   2011 - 2015
- * @author      Ohad Raz (email: admin@bainternet.info)
+ * @author      Ohad Raz <admin@bainternet.info>
  * @link        http://en.bainternet.info
  * @author      David Miles <david@amereservant.com>
  * @link        http://github.com/amereservant/PHP-Hooks
  * @author      Lars Moelleken <lars@moelleken.org>
  * @link        https://github.com/voku/PHP-Hooks/
- * @author      Damien "Mistic" Sorel (email: contact@git.strangeplanet.fr)
+ * @author      Damien "Mistic" Sorel <contact@git.strangeplanet.fr>
  * @link        http://www.strangeplanet.fr
  *
  * @license     GNU General Public License v3.0 - license.txt
@@ -178,7 +178,7 @@ if (!class_exists('Hooks')) {
      */
     public function add_filter($tag, $function_to_add, $priority = self::PRIORITY_NEUTRAL, $include_path = null)
     {
-      $idx = $this->_filter_build_unique_id($tag, $function_to_add, $priority);
+      $idx = $this->__filter_build_unique_id($tag, $function_to_add, $priority);
 
       $this->filters[$tag][$priority][$idx] = array(
           'function'     => $function_to_add,
@@ -203,7 +203,7 @@ if (!class_exists('Hooks')) {
      */
     public function remove_filter($tag, $function_to_remove, $priority = self::PRIORITY_NEUTRAL)
     {
-      $function_to_remove = $this->_filter_build_unique_id($tag, $function_to_remove, $priority);
+      $function_to_remove = $this->__filter_build_unique_id($tag, $function_to_remove, $priority);
 
       if (!isset($this->filters[$tag][$priority][$function_to_remove])) {
         return false;
@@ -277,7 +277,7 @@ if (!class_exists('Hooks')) {
         return $has;
       }
 
-      if (!($idx = $this->_filter_build_unique_id($tag, $function_to_check, false))) {
+      if (!($idx = $this->__filter_build_unique_id($tag, $function_to_check, false))) {
         return false;
       }
 
@@ -717,7 +717,7 @@ if (!class_exists('Hooks')) {
      * @access   private
      * @since    1.0.0
      */
-    private function _filter_build_unique_id($tag, $function, $priority)
+    private function __filter_build_unique_id($tag, $function, $priority)
     {
       static $filter_id_count = 0;
 
