@@ -312,7 +312,7 @@ if (!class_exists('Hooks')) {
       if (isset($this->filters['all'])) {
         $this->current_filter[] = $tag;
         $args = func_get_args();
-        $this->_call_all_hook($args);
+        $this->__call_all_hook($args);
       }
 
       if (!isset($this->filters[$tag])) {
@@ -380,7 +380,7 @@ if (!class_exists('Hooks')) {
       if (isset($this->filters['all'])) {
         $this->current_filter[] = $tag;
         $all_args = func_get_args();
-        $this->_call_all_hook($all_args);
+        $this->__call_all_hook($all_args);
       }
 
       if (!isset($this->filters[$tag])) {
@@ -537,7 +537,7 @@ if (!class_exists('Hooks')) {
       if (isset($this->filters['all'])) {
         $this->current_filter[] = $tag;
         $all_args = func_get_args();
-        $this->_call_all_hook($all_args);
+        $this->__call_all_hook($all_args);
       }
 
       if (!isset($this->filters[$tag])) {
@@ -619,7 +619,7 @@ if (!class_exists('Hooks')) {
       if (isset($this->filters['all'])) {
         $this->current_filter[] = $tag;
         $all_args = func_get_args();
-        $this->_call_all_hook($all_args);
+        $this->__call_all_hook($all_args);
       }
 
       if (!isset($this->filters[$tag])) {
@@ -771,7 +771,7 @@ if (!class_exists('Hooks')) {
      * @access   public
      * @since    1.0.0
      */
-    public function _call_all_hook($args)
+    public function __call_all_hook($args)
     {
       reset($this->filters['all']);
 
@@ -942,7 +942,7 @@ if (!class_exists('Hooks')) {
       return preg_replace_callback(
           "/$pattern/s", array(
           $this,
-          'do_shortcode_tag'
+          '__do_shortcode_tag'
       ), $content
       );
     }
@@ -971,7 +971,7 @@ if (!class_exists('Hooks')) {
       $tagnames = array_keys(self::$shortcode_tags);
       $tagregexp = join('|', array_map('preg_quote', $tagnames));
 
-      // WARNING! Do not change this regex without changing do_shortcode_tag() and strip_shortcode_tag()
+      // WARNING! Do not change this regex without changing __do_shortcode_tag() and __strip_shortcode_tag()
       // Also, see shortcode_unautop() and shortcode.js.
       return
           '\\[' // Opening bracket
@@ -1016,7 +1016,7 @@ if (!class_exists('Hooks')) {
      *
      * @return mixed False on failure.
      */
-    private function do_shortcode_tag($m)
+    private function __do_shortcode_tag($m)
     {
       // allow [[foo]] syntax for escaping a tag
       if ($m[1] == '[' && $m[6] == ']') {
@@ -1148,7 +1148,7 @@ if (!class_exists('Hooks')) {
       return preg_replace_callback(
           "/$pattern/s", array(
           $this,
-          'strip_shortcode_tag'
+          '__strip_shortcode_tag'
       ), $content
       );
     }
@@ -1162,7 +1162,7 @@ if (!class_exists('Hooks')) {
      *
      * @return string
      */
-    private function strip_shortcode_tag($m)
+    private function __strip_shortcode_tag($m)
     {
       // allow [[foo]] syntax for escaping a tag
       if ($m[1] == '[' && $m[6] == ']') {
