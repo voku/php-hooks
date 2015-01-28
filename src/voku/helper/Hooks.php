@@ -12,7 +12,7 @@ namespace voku\helper;
  * of the code comes from there.
  *
  *
- * @version     0.1.5
+ * @version     0.2
  * @copyright   2011 - 2015
  * @author      Ohad Raz (email: admin@bainternet.info)
  * @link        http://en.bainternet.info
@@ -89,6 +89,14 @@ if (!class_exists('Hooks')) {
     public static $shortcode_tags = array();
 
     /**
+     * Default priority
+     *
+     * @since 0.2
+     * @const int
+     */
+    const PRIORITY_NEUTRAL = 50;
+
+    /**
      * is not allowed to call from outside: private!
      *
      * @access private
@@ -160,19 +168,21 @@ if (!class_exists('Hooks')) {
      *                                       when the filter is applied.
      * @param    integer $priority           (optional) Used to specify the order in
      *                                       which the functions associated with a
-     *                                       particular action are executed (default: 10).
+     *                                       particular action are executed (default: 50).
      *                                       Lower numbers correspond with earlier execution,
      *                                       and functions with the same priority are executed
      *                                       in the order in which they were added to the action.
+     * @param string     $include_path       optional. File to include before executing the callback.
      *
      * @return   boolean true
      */
-    public function add_filter($tag, $function_to_add, $priority = 10)
+    public function add_filter($tag, $function_to_add, $priority = self::PRIORITY_NEUTRAL, $include_path = null)
     {
       $idx = $this->_filter_build_unique_id($tag, $function_to_add, $priority);
 
       $this->filters[$tag][$priority][$idx] = array(
-        'function'      => $function_to_add
+          'function'     => $function_to_add,
+          'include_path' => is_string($include_path) ? $include_path : null,
       );
 
       unset($this->merged_filters[$tag]);
@@ -187,11 +197,11 @@ if (!class_exists('Hooks')) {
      *
      * @param string $tag                the filter hook to which the function to be removed is hooked.
      * @param mixed  $function_to_remove the name of the function which should be removed.
-     * @param int    $priority           (optional) The priority of the function (default: 10).
+     * @param int    $priority           (optional) The priority of the function (default: 50).
      *
      * @return bool
      */
-    public function remove_filter($tag, $function_to_remove, $priority = 10)
+    public function remove_filter($tag, $function_to_remove, $priority = self::PRIORITY_NEUTRAL)
     {
       $function_to_remove = $this->_filter_build_unique_id($tag, $function_to_remove, $priority);
 
@@ -285,8 +295,8 @@ if (!class_exists('Hooks')) {
      *
      * Call the functions added to a filter hook.
      *
-     * @param    string $tag        The name of the filter hook.
-     * @param    mixed  $value      The value on which the filters hooked to <tt>$tag</tt> are applied on.
+     * @param    string $tag   The name of the filter hook.
+     * @param    mixed  $value The value on which the filters hooked to <tt>$tag</tt> are applied on.
      *
      * @internal param mixed $var   Additional variables passed to the functions hooked to <tt>$tag</tt>.
      *
@@ -329,12 +339,18 @@ if (!class_exists('Hooks')) {
         $args = func_get_args();
       }
 
+      array_shift($args);
+
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
-
           if (!is_null($the_['function'])) {
-            $args[1] = $value;
-            $value = call_user_func_array($the_['function'], array_slice($args, 1));
+
+            if (!is_null($the_['include_path'])) {
+              include_once($the_['include_path']);
+            }
+
+            $args[0] = $value;
+            $value = call_user_func_array($the_['function'], $args);
           }
         }
       }
@@ -390,6 +406,11 @@ if (!class_exists('Hooks')) {
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
           if (!is_null($the_['function'])) {
+
+            if (!is_null($the_['include_path'])) {
+              include_once($the_['include_path']);
+            }
+
             $args[0] = call_user_func_array($the_['function'], $args);
           }
         }
@@ -415,18 +436,19 @@ if (!class_exists('Hooks')) {
      * @param    string  $function_to_add The name of the function you wish to be called.
      * @param    integer $priority        (optional) Used to specify the order in which
      *                                    the functions associated with a particular
-     *                                    action are executed (default: 10).
+     *                                    action are executed (default: 50).
      *                                    Lower numbers correspond with earlier execution,
      *                                    and functions with the same priority are executed
      *                                    in the order in which they were added to the action.
+     * @param     string $include_path    optional. File to include before executing the callback.
      *
      * @access   public
      * @since    1.0.0
      * @return bool
      */
-    public function add_action($tag, $function_to_add, $priority = 10)
+    public function add_action($tag, $function_to_add, $priority = self::PRIORITY_NEUTRAL, $include_path = null)
     {
-      return $this->add_filter($tag, $function_to_add, $priority);
+      return $this->add_filter($tag, $function_to_add, $priority, $include_path);
     }
 
     /**
@@ -462,11 +484,11 @@ if (!class_exists('Hooks')) {
      *
      * @param string $tag                the action hook to which the function to be removed is hooked.
      * @param mixed  $function_to_remove the name of the function which should be removed.
-     * @param int    $priority           [optional] The priority of the function (default: 10).
+     * @param int    $priority           [optional] The priority of the function (default: 50).
      *
      * @return bool   Whether the function is removed.
      */
-    public function remove_action($tag, $function_to_remove, $priority = 10)
+    public function remove_action($tag, $function_to_remove, $priority = self::PRIORITY_NEUTRAL)
     {
       return $this->remove_filter($tag, $function_to_remove, $priority);
     }
@@ -555,6 +577,11 @@ if (!class_exists('Hooks')) {
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
           if (!is_null($the_['function'])) {
+
+            if (!is_null($the_['include_path'])) {
+              include_once($the_['include_path']);
+            }
+
             call_user_func_array($the_['function'], $args);
           }
         }
@@ -618,6 +645,11 @@ if (!class_exists('Hooks')) {
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
           if (!is_null($the_['function'])) {
+
+            if (!is_null($the_['include_path'])) {
+              include_once($the_['include_path']);
+            }
+
             call_user_func_array($the_['function'], $args);
           }
         }
@@ -696,8 +728,8 @@ if (!class_exists('Hooks')) {
       if (is_object($function)) {
         // Closures are currently implemented as objects
         $function = array(
-          $function,
-          ''
+            $function,
+            ''
         );
       } else {
         $function = (array)$function;
@@ -746,6 +778,11 @@ if (!class_exists('Hooks')) {
       do {
         foreach ((array)current($this->filters['all']) as $the_) {
           if (!is_null($the_['function'])) {
+
+            if (!is_null($the_['include_path'])) {
+              include_once($the_['include_path']);
+            }
+
             call_user_func_array($the_['function'], $args);
           }
         }
@@ -859,7 +896,7 @@ if (!class_exists('Hooks')) {
      */
     public function has_shortcode($content, $tag)
     {
-      if ( false === strpos( $content, '[' ) ) {
+      if (false === strpos($content, '[')) {
         return false;
       }
 
@@ -872,7 +909,7 @@ if (!class_exists('Hooks')) {
         foreach ($matches as $shortcode) {
           if ($tag === $shortcode[2]) {
             return true;
-          } elseif ( ! empty( $shortcode[5] ) && $this->has_shortcode( $shortcode[5], $tag ) ) {
+          } elseif (!empty($shortcode[5]) && $this->has_shortcode($shortcode[5], $tag)) {
             return true;
           }
         }
@@ -903,10 +940,10 @@ if (!class_exists('Hooks')) {
       $pattern = $this->get_shortcode_regex();
 
       return preg_replace_callback(
-        "/$pattern/s", array(
+          "/$pattern/s", array(
           $this,
           'do_shortcode_tag'
-        ), $content
+      ), $content
       );
     }
 
@@ -937,34 +974,34 @@ if (!class_exists('Hooks')) {
       // WARNING! Do not change this regex without changing do_shortcode_tag() and strip_shortcode_tag()
       // Also, see shortcode_unautop() and shortcode.js.
       return
-        '\\[' // Opening bracket
-        . '(\\[?)' // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
-        . "($tagregexp)" // 2: Shortcode name
-        . '(?![\\w-])' // Not followed by word character or hyphen
-        . '(' // 3: Unroll the loop: Inside the opening shortcode tag
-        . '[^\\]\\/]*' // Not a closing bracket or forward slash
-        . '(?:'
-        . '\\/(?!\\])' // A forward slash not followed by a closing bracket
-        . '[^\\]\\/]*' // Not a closing bracket or forward slash
-        . ')*?'
-        . ')'
-        . '(?:'
-        . '(\\/)' // 4: Self closing tag ...
-        . '\\]' // ... and closing bracket
-        . '|'
-        . '\\]' // Closing bracket
-        . '(?:'
-        . '(' // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
-        . '[^\\[]*+' // Not an opening bracket
-        . '(?:'
-        . '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
-        . '[^\\[]*+' // Not an opening bracket
-        . ')*+'
-        . ')'
-        . '\\[\\/\\2\\]' // Closing shortcode tag
-        . ')?'
-        . ')'
-        . '(\\]?)'; // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
+          '\\[' // Opening bracket
+          . '(\\[?)' // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
+          . "($tagregexp)" // 2: Shortcode name
+          . '(?![\\w-])' // Not followed by word character or hyphen
+          . '(' // 3: Unroll the loop: Inside the opening shortcode tag
+          . '[^\\]\\/]*' // Not a closing bracket or forward slash
+          . '(?:'
+          . '\\/(?!\\])' // A forward slash not followed by a closing bracket
+          . '[^\\]\\/]*' // Not a closing bracket or forward slash
+          . ')*?'
+          . ')'
+          . '(?:'
+          . '(\\/)' // 4: Self closing tag ...
+          . '\\]' // ... and closing bracket
+          . '|'
+          . '\\]' // Closing bracket
+          . '(?:'
+          . '(' // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
+          . '[^\\[]*+' // Not an opening bracket
+          . '(?:'
+          . '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
+          . '[^\\[]*+' // Not an opening bracket
+          . ')*+'
+          . ')'
+          . '\\[\\/\\2\\]' // Closing shortcode tag
+          . ')?'
+          . ')'
+          . '(\\]?)'; // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
     }
 
     /**
@@ -1080,10 +1117,10 @@ if (!class_exists('Hooks')) {
        */
       if ($shortcode) {
         $out = $this->apply_filters(
-          array(
-            $this,
-            "shortcode_atts_{$shortcode}"
-          ), $out, $pairs, $atts
+            array(
+                $this,
+                "shortcode_atts_{$shortcode}"
+            ), $out, $pairs, $atts
         );
       }
 
@@ -1109,10 +1146,10 @@ if (!class_exists('Hooks')) {
       $pattern = $this->get_shortcode_regex();
 
       return preg_replace_callback(
-        "/$pattern/s", array(
+          "/$pattern/s", array(
           $this,
           'strip_shortcode_tag'
-        ), $content
+      ), $content
       );
     }
 
