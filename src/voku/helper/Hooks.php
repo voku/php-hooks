@@ -12,14 +12,16 @@ namespace voku\helper;
  * of the code comes from there.
  *
  *
- * @version     0.1.3
- * @copyright   2011 - 2014
+ * @version     0.1.5
+ * @copyright   2011 - 2015
  * @author      Ohad Raz (email: admin@bainternet.info)
  * @link        http://en.bainternet.info
  * @author      David Miles <david@amereservant.com>
  * @link        http://github.com/amereservant/PHP-Hooks
  * @author      Lars Moelleken <lars@moelleken.org>
  * @link        https://github.com/voku/PHP-Hooks/
+ * @author      Damien "Mistic" Sorel (email: contact@git.strangeplanet.fr)
+ * @link        http://www.strangeplanet.fr
  *
  * @license     GNU General Public License v3.0 - license.txt
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -162,17 +164,15 @@ if (!class_exists('Hooks')) {
      *                                       Lower numbers correspond with earlier execution,
      *                                       and functions with the same priority are executed
      *                                       in the order in which they were added to the action.
-     * @param    integer $accepted_args      (optional) The number of arguments the function accept (default 1).
      *
      * @return   boolean true
      */
-    public function add_filter($tag, $function_to_add, $priority = 10, $accepted_args = 1)
+    public function add_filter($tag, $function_to_add, $priority = 10)
     {
       $idx = $this->_filter_build_unique_id($tag, $function_to_add, $priority);
 
       $this->filters[$tag][$priority][$idx] = array(
-        'function'      => $function_to_add,
-        'accepted_args' => $accepted_args
+        'function'      => $function_to_add
       );
 
       unset($this->merged_filters[$tag]);
@@ -334,7 +334,7 @@ if (!class_exists('Hooks')) {
 
           if (!is_null($the_['function'])) {
             $args[1] = $value;
-            $value = call_user_func_array($the_['function'], array_slice($args, 1, (int)$the_['accepted_args']));
+            $value = call_user_func_array($the_['function'], array_slice($args, 1));
           }
         }
       }
@@ -390,7 +390,7 @@ if (!class_exists('Hooks')) {
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
           if (!is_null($the_['function'])) {
-            $args[0] = call_user_func_array($the_['function'], array_slice($args, 0, (int)$the_['accepted_args']));
+            $args[0] = call_user_func_array($the_['function'], $args);
           }
         }
       }
@@ -419,15 +419,14 @@ if (!class_exists('Hooks')) {
      *                                    Lower numbers correspond with earlier execution,
      *                                    and functions with the same priority are executed
      *                                    in the order in which they were added to the action.
-     * @param    integer $accepted_args   (optional) The number of arguments the function accept (default 1).
      *
      * @access   public
      * @since    1.0.0
      * @return bool
      */
-    public function add_action($tag, $function_to_add, $priority = 10, $accepted_args = 1)
+    public function add_action($tag, $function_to_add, $priority = 10)
     {
-      return $this->add_filter($tag, $function_to_add, $priority, $accepted_args);
+      return $this->add_filter($tag, $function_to_add, $priority);
     }
 
     /**
@@ -556,7 +555,7 @@ if (!class_exists('Hooks')) {
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
           if (!is_null($the_['function'])) {
-            call_user_func_array($the_['function'], array_slice($args, 0, (int)$the_['accepted_args']));
+            call_user_func_array($the_['function'], $args);
           }
         }
       }
@@ -619,7 +618,7 @@ if (!class_exists('Hooks')) {
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
           if (!is_null($the_['function'])) {
-            call_user_func_array($the_['function'], array_slice($args, 0, (int)$the_['accepted_args']));
+            call_user_func_array($the_['function'], $args);
           }
         }
       }
