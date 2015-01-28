@@ -295,10 +295,10 @@ if (!class_exists('Hooks')) {
      *
      * Call the functions added to a filter hook.
      *
+     * Info:  Additional variables passed to the functions hooked to <tt>$tag</tt>.
+     *
      * @param    string $tag   The name of the filter hook.
      * @param    mixed  $value The value on which the filters hooked to <tt>$tag</tt> are applied on.
-     *
-     * @internal param mixed $var   Additional variables passed to the functions hooked to <tt>$tag</tt>.
      *
      * @return   mixed              The filtered value after all hooked functions are applied to it.
      * @access   public

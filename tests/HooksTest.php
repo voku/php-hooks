@@ -59,6 +59,28 @@ class HooksTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($lall, $this->testString_1 . $this->testString_2);
   }
 
+
+  public function testAction()
+  {
+    $done = false;
+
+    $this->hooks->add_action('bar', function() use(&$done) {
+      $done = !$done;
+    });
+
+    $this->hooks->do_action('bar');
+    $this->assertTrue($done);
+  }
+
+  public function testFilter()
+  {
+    $this->hooks->add_filter('foo', function($content) {
+      return '<b>' . $content . '</b>';
+    });
+
+    $this->assertEquals('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
+  }
+
   /**
    * Sets up the fixture, for example, opens a network connection.
    * This method is called before a test is executed.
