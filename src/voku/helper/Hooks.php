@@ -178,7 +178,7 @@ if (!class_exists('Hooks')) {
      */
     public function add_filter($tag, $function_to_add, $priority = self::PRIORITY_NEUTRAL, $include_path = null)
     {
-      $idx = $this->__filter_build_unique_id($tag, $function_to_add, $priority);
+      $idx = $this->__filter_build_unique_id($function_to_add);
 
       $this->filters[$tag][$priority][$idx] = array(
           'function'     => $function_to_add,
@@ -203,7 +203,7 @@ if (!class_exists('Hooks')) {
      */
     public function remove_filter($tag, $function_to_remove, $priority = self::PRIORITY_NEUTRAL)
     {
-      $function_to_remove = $this->__filter_build_unique_id($tag, $function_to_remove, $priority);
+      $function_to_remove = $this->__filter_build_unique_id($function_to_remove);
 
       if (!isset($this->filters[$tag][$priority][$function_to_remove])) {
         return false;
@@ -277,7 +277,7 @@ if (!class_exists('Hooks')) {
         return $has;
       }
 
-      if (!($idx = $this->__filter_build_unique_id($tag, $function_to_check, false))) {
+      if (!($idx = $this->__filter_build_unique_id($function_to_check))) {
         return false;
       }
 
@@ -704,12 +704,7 @@ if (!class_exists('Hooks')) {
      *
      * Build Unique ID for storage and retrieval.
      *
-     * @param    string   $tag           Used in counting how many hooks were applied
      * @param    string   $function      Used for creating unique id
-     * @param    int|bool $priority      Used in counting how many hooks were applied.
-     *                                   If === false and $function is an object reference,
-     *                                   we return the unique id only if it already has one,
-     *                                   false otherwise.
      *
      * @return   string|bool             Unique ID for usage as array key or false if
      *                                   $priority === false and $function is an
@@ -717,10 +712,8 @@ if (!class_exists('Hooks')) {
      * @access   private
      * @since    1.0.0
      */
-    private function __filter_build_unique_id($tag, $function, $priority)
+    private function __filter_build_unique_id($function)
     {
-      static $filter_id_count = 0;
-
       if (is_string($function)) {
         return $function;
       }
@@ -737,24 +730,7 @@ if (!class_exists('Hooks')) {
 
       if (is_object($function[0])) {
         // Object Class Calling
-        if (function_exists('spl_object_hash')) {
-          return spl_object_hash($function[0]) . $function[1];
-        } else {
-          $obj_idx = get_class($function[0]) . $function[1];
-          if (!isset($function[0]->filter_id)) {
-            if (false === $priority) {
-              return false;
-            }
-
-            $obj_idx .= isset($this->filters[$tag][$priority]) ? count((array)$this->filters[$tag][$priority]) : $filter_id_count;
-            $function[0]->filter_id = $filter_id_count;
-            ++$filter_id_count;
-          } else {
-            $obj_idx .= $function[0]->filter_id;
-          }
-
-          return $obj_idx;
-        }
+        return spl_object_hash($function[0]) . $function[1];
       } else if (is_string($function[0])) {
         // Static Calling
         return $function[0] . $function[1];
