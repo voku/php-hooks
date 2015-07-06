@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.org/voku/php-hooks.svg?branch=master)](https://travis-ci.org/voku/php-hooks)
 [![Coverage Status](https://coveralls.io/repos/voku/php-hooks/badge.svg)](https://coveralls.io/r/voku/php-hooks)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/voku/php-hooks/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/voku/php-hooks/?branch=master)
+[![Codacy Badge](https://www.codacy.com/project/badge/6f6b0c6c9f4e4bc8ac0c9159fd86adb2)](https://www.codacy.com/app/voku/php-hooks)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/8ab3148c-61b5-4da6-be80-9018eb0b4441/mini.png)](https://insight.sensiolabs.com/projects/8ab3148c-61b5-4da6-be80-9018eb0b4441)
-[![Total Downloads](https://poser.pugx.org/voku/php-hooks/downloads.svg)](https://packagist.org/packages/voku/php-hooks)
+[![Total Downloads](https://poser.pugx.org/voku/php-hooks/downloads)](https://packagist.org/packages/voku/php-hooks)
 [![License](https://poser.pugx.org/voku/php-hooks/license.svg)](https://packagist.org/packages/voku/php-hooks)
 
 PHP-Hooks
