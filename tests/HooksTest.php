@@ -53,7 +53,7 @@ class HooksTest extends PHPUnit_Framework_TestCase
 
     $lall = $this->hooks->apply_filters('test', '');
 
-    $this->assertEquals($lall, $this->testString_1 . $this->testString_2);
+    self::assertEquals($lall, $this->testString_1 . $this->testString_2);
   }
 
 
@@ -66,7 +66,7 @@ class HooksTest extends PHPUnit_Framework_TestCase
     });
 
     $this->hooks->do_action('bar');
-    $this->assertTrue($done);
+    self::assertTrue($done);
   }
 
   public function testFilter()
@@ -75,7 +75,7 @@ class HooksTest extends PHPUnit_Framework_TestCase
       return '<b>' . $content . '</b>';
     });
 
-    $this->assertEquals('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
+    self::assertEquals('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
   }
 
   /**
@@ -142,7 +142,7 @@ class HooksTest extends PHPUnit_Framework_TestCase
     $default_content = '[youtube id=iCUV3iv9xOs color=white theme=light]';
     $parsed_content = $hooks->do_shortcode($default_content);
 
-    $this->assertEquals('<iframe type="text/html" frameborder=0 width=640 height=390 src="http://www.youtube.com/embed/iCUV3iv9xOs?color=white&theme=light&autoplay=0&controls=1&start=0" />', $parsed_content);
+    self::assertEquals('<iframe type="text/html" frameborder=0 width=640 height=390 src="http://www.youtube.com/embed/iCUV3iv9xOs?color=white&theme=light&autoplay=0&controls=1&start=0" />', $parsed_content);
   }
 
   /**
