@@ -83,7 +83,7 @@ class HooksTest extends PHPUnit_Framework_TestCase
    *
    * @return string
    */
-  function parse_youtube($attrs)
+  public function parse_youtube($attrs)
   {
     $hooks = Hooks::getInstance();
 
