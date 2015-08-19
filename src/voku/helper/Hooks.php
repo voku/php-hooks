@@ -346,7 +346,7 @@ if (!class_exists('Hooks')) {
           if (!is_null($the_['function'])) {
 
             if (!is_null($the_['include_path'])) {
-              include_once($the_['include_path']);
+              include_once $the_['include_path'];
             }
 
             $args[0] = $value;
@@ -408,7 +408,7 @@ if (!class_exists('Hooks')) {
           if (!is_null($the_['function'])) {
 
             if (!is_null($the_['include_path'])) {
-              include_once($the_['include_path']);
+              include_once $the_['include_path'];
             }
 
             $args[0] = call_user_func_array($the_['function'], $args);
@@ -579,7 +579,7 @@ if (!class_exists('Hooks')) {
           if (!is_null($the_['function'])) {
 
             if (!is_null($the_['include_path'])) {
-              include_once($the_['include_path']);
+              include_once $the_['include_path'];
             }
 
             call_user_func_array($the_['function'], $args);
@@ -647,7 +647,7 @@ if (!class_exists('Hooks')) {
           if (!is_null($the_['function'])) {
 
             if (!is_null($the_['include_path'])) {
-              include_once($the_['include_path']);
+              include_once $the_['include_path'];
             }
 
             call_user_func_array($the_['function'], $args);
@@ -731,7 +731,7 @@ if (!class_exists('Hooks')) {
       if (is_object($function[0])) {
         // Object Class Calling
         return spl_object_hash($function[0]) . $function[1];
-      } else if (is_string($function[0])) {
+      } elseif (is_string($function[0])) {
         // Static Calling
         return $function[0] . $function[1];
       }
@@ -756,7 +756,7 @@ if (!class_exists('Hooks')) {
           if (!is_null($the_['function'])) {
 
             if (!is_null($the_['include_path'])) {
-              include_once($the_['include_path']);
+              include_once $the_['include_path'];
             }
 
             call_user_func_array($the_['function'], $args);
@@ -1028,7 +1028,7 @@ if (!class_exists('Hooks')) {
     {
       $atts = array();
       $pattern = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
-      $text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
+      $text = preg_replace("/[\x{00a0}\x{200b}]+/u", ' ', $text);
       if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
         foreach ($match as $m) {
           if (!empty($m[1])) {
