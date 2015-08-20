@@ -11,8 +11,6 @@ namespace voku\helper;
  * This class is heavily based on the WordPress plugin API and most (if not all)
  * of the code comes from there.
  *
- *
- * @version     0.2.1
  * @copyright   2011 - 2015
  * @author      Ohad Raz <admin@bainternet.info>
  * @link        http://en.bainternet.info
