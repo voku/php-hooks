@@ -117,17 +117,6 @@ if (!class_exists('Hooks')) {
     }
 
     /**
-     * prevent from being unserialized
-     *
-     * @access private
-     *
-     * @return void
-     */
-    private function __wakeup()
-    {
-    }
-
-    /**
      * Singleton Instance
      *
      * Returns a Singleton instance of this class.
@@ -343,9 +332,10 @@ if (!class_exists('Hooks')) {
 
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
-          if (!is_null($the_['function'])) {
+          if (null !== $the_['function']) {
 
-            if (!is_null($the_['include_path'])) {
+            if (null !== $the_['include_path']) {
+              /** @noinspection PhpIncludeInspection */
               include_once $the_['include_path'];
             }
 
@@ -353,8 +343,7 @@ if (!class_exists('Hooks')) {
             $value = call_user_func_array($the_['function'], $args);
           }
         }
-      }
-      while (next($this->filters[$tag]) !== false);
+      } while (next($this->filters[$tag]) !== false);
 
       array_pop($this->current_filter);
 
@@ -405,17 +394,17 @@ if (!class_exists('Hooks')) {
 
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
-          if (!is_null($the_['function'])) {
+          if (null !== $the_['function']) {
 
-            if (!is_null($the_['include_path'])) {
+            if (null !== $the_['include_path']) {
+              /** @noinspection PhpIncludeInspection */
               include_once $the_['include_path'];
             }
 
             $args[0] = call_user_func_array($the_['function'], $args);
           }
         }
-      }
-      while (next($this->filters[$tag]) !== false);
+      } while (next($this->filters[$tag]) !== false);
 
       array_pop($this->current_filter);
 
@@ -576,17 +565,17 @@ if (!class_exists('Hooks')) {
 
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
-          if (!is_null($the_['function'])) {
+          if (null !== $the_['function']) {
 
-            if (!is_null($the_['include_path'])) {
+            if (null !== $the_['include_path']) {
+              /** @noinspection PhpIncludeInspection */
               include_once $the_['include_path'];
             }
 
             call_user_func_array($the_['function'], $args);
           }
         }
-      }
-      while (next($this->filters[$tag]) !== false);
+      } while (next($this->filters[$tag]) !== false);
 
       array_pop($this->current_filter);
     }
@@ -644,17 +633,17 @@ if (!class_exists('Hooks')) {
 
       do {
         foreach ((array)current($this->filters[$tag]) as $the_) {
-          if (!is_null($the_['function'])) {
+          if (null !== $the_['function']) {
 
-            if (!is_null($the_['include_path'])) {
+            if (null !== $the_['include_path']) {
+              /** @noinspection PhpIncludeInspection */
               include_once $the_['include_path'];
             }
 
             call_user_func_array($the_['function'], $args);
           }
         }
-      }
-      while (next($this->filters[$tag]) !== false);
+      } while (next($this->filters[$tag]) !== false);
 
       array_pop($this->current_filter);
     }
@@ -704,7 +693,7 @@ if (!class_exists('Hooks')) {
      *
      * Build Unique ID for storage and retrieval.
      *
-     * @param    string   $function      Used for creating unique id
+     * @param    string $function Used for creating unique id
      *
      * @return   string|bool             Unique ID for usage as array key or false if
      *                                   $priority === false and $function is an
@@ -722,7 +711,7 @@ if (!class_exists('Hooks')) {
         // Closures are currently implemented as objects
         $function = array(
             $function,
-            ''
+            '',
         );
       } else {
         $function = (array)$function;
@@ -753,17 +742,17 @@ if (!class_exists('Hooks')) {
 
       do {
         foreach ((array)current($this->filters['all']) as $the_) {
-          if (!is_null($the_['function'])) {
+          if (null !== $the_['function']) {
 
-            if (!is_null($the_['include_path'])) {
+            if (null !== $the_['include_path']) {
+              /** @noinspection PhpIncludeInspection */
               include_once $the_['include_path'];
             }
 
             call_user_func_array($the_['function'], $args);
           }
         }
-      }
-      while (next($this->filters['all']) !== false);
+      } while (next($this->filters['all']) !== false);
     }
 
     /**
@@ -916,10 +905,12 @@ if (!class_exists('Hooks')) {
       $pattern = $this->get_shortcode_regex();
 
       return preg_replace_callback(
-          "/$pattern/s", array(
-          $this,
-          '__do_shortcode_tag'
-      ), $content
+          "/$pattern/s",
+          array(
+              $this,
+              '__do_shortcode_tag',
+          ),
+          $content
       );
     }
 
@@ -1095,7 +1086,7 @@ if (!class_exists('Hooks')) {
         $out = $this->apply_filters(
             array(
                 $this,
-                "shortcode_atts_{$shortcode}"
+                "shortcode_atts_{$shortcode}",
             ), $out, $pairs, $atts
         );
       }
@@ -1122,10 +1113,12 @@ if (!class_exists('Hooks')) {
       $pattern = $this->get_shortcode_regex();
 
       return preg_replace_callback(
-          "/$pattern/s", array(
-          $this,
-          '__strip_shortcode_tag'
-      ), $content
+          "/$pattern/s",
+          array(
+              $this,
+              '__strip_shortcode_tag',
+          ),
+          $content
       );
     }
 
