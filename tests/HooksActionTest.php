@@ -5,7 +5,7 @@ use voku\helper\Hooks;
 /**
  * Class HooksTest
  */
-class HooksTestFilter extends PHPUnit_Framework_TestCase
+class HooksActionTest extends PHPUnit_Framework_TestCase
 {
 
   /**
@@ -14,15 +14,19 @@ class HooksTestFilter extends PHPUnit_Framework_TestCase
   protected $hooks;
 
   /**
-   * test filter
+   * test action
    */
-  public function testFilter()
+  public function testAction()
   {
-    $this->hooks->add_filter('foo', function ($content) {
-        return '<b>' . $content . '</b>';
+    $done = false;
+
+    $this->hooks->add_action('bar', function () use (&$done) {
+        $done = true;
     });
 
-    self::assertEquals('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
+    $this->hooks->do_action('bar');
+
+    self::assertTrue($done);
   }
 
   /**
@@ -33,5 +37,4 @@ class HooksTestFilter extends PHPUnit_Framework_TestCase
   {
     $this->hooks = Hooks::getInstance();
   }
-
 }
