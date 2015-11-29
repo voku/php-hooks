@@ -11,7 +11,14 @@ PHP-Hooks
 The PHP Hooks Class is a fork of the WordPress filters hook system rolled in to a class to be ported into any php based system  
 *  This class is heavily based on the WordPress plugin API and most (if not all) of the code comes from there.
 
-How to Use?
+How to install?
+=====
+
+```shell
+composer require voku/php-hooks
+```
+
+How to use?
 =====
 
 We start with a simple example ...
@@ -133,16 +140,6 @@ Methods
      - @param mixed $value The value on which the filters hooked to <tt>$tag</tt> are applied on.
      - @param mixed $var,... Additional variables passed to the functions hooked to <tt>$tag</tt>.
      - @return mixed The filtered value after all hooked functions are applied to it.
-
-  There are a few more methods but these are the main ones you'll use :).
-
-Download
-========
-You can download this project in either [zip][1] or [tar][2] formats
-
-You can also clone the project with Git by running:
-
-    $ git clone git://github.com/bainternet/PHP-Hooks.git
 
 License
 =======
