@@ -40,13 +40,9 @@ $hooks->do_action('header_action');
 echo '</div>';
 ```
 
-and you output will be: `< div id="extra_header">this came from a hooked function</div>`
+and you output will be: `<div id="extra_header">this came from a hooked function</div>`
 
-PS: you can also use method from a class for a hook e.g.:
-
-```php
-$hooks->add_action('header_action', array($this, 'echo_this_in_header_via_method');
-```
+PS: you can also use method from a class for a hook e.g.: `$hooks->add_action('header_action', array($this, 'echo_this_in_header_via_method');`
 
 Methods
 =======
