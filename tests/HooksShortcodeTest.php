@@ -77,7 +77,7 @@ class HooksShortcodeTest extends PHPUnit_Framework_TestCase
     $default_content = '[youtube id=iCUV3iv9xOs color=white theme=light]';
     $parsed_content = $hooks->do_shortcode($default_content);
 
-    self::assertEquals('<iframe type="text/html" frameborder=0 width=640 height=390 src="http://www.youtube.com/embed/iCUV3iv9xOs?color=white&theme=light&autoplay=0&controls=1&start=0" />', $parsed_content);
+    self::assertSame('<iframe type="text/html" frameborder=0 width=640 height=390 src="http://www.youtube.com/embed/iCUV3iv9xOs?color=white&theme=light&autoplay=0&controls=1&start=0" />', $parsed_content);
   }
 
   /**

@@ -22,7 +22,7 @@ class HooksFilterTest extends PHPUnit_Framework_TestCase
         return '<b>' . $content . '</b>';
     });
 
-    self::assertEquals('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
+    self::assertSame('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
   }
 
   /**

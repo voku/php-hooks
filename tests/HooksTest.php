@@ -53,7 +53,7 @@ class HooksTest extends PHPUnit_Framework_TestCase
 
     $lall = $this->hooks->apply_filters('test', '');
 
-    self::assertEquals($lall, $this->testString_1 . $this->testString_2);
+    self::assertSame($lall, $this->testString_1 . $this->testString_2);
   }
 
   /**
