@@ -47,7 +47,8 @@ class HooksShortcodeTest extends PHPUnit_Framework_TestCase
                 'start'  => 0,
             ),
             $attrs
-        )
+        ),
+        EXTR_OVERWRITE
     );
 
     if (!$id && !$list) {

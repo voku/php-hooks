@@ -11,7 +11,7 @@ namespace voku\helper;
  * This class is heavily based on the WordPress plugin API and most (if not all)
  * of the code comes from there.
  *
- * @copyright   2011 - 2015
+ * @copyright   2011 - 2016
  * @author      Ohad Raz <admin@bainternet.info>
  * @link        http://en.bainternet.info
  * @author      David Miles <david@amereservant.com>
@@ -135,8 +135,6 @@ class Hooks
    */
 
   /**
-   * Add Filter
-   *
    * Adds Hooks to a function or method to a specific filter action.
    *
    * @access   public
@@ -171,8 +169,6 @@ class Hooks
   }
 
   /**
-   * Remove Filter
-   *
    * Removes a function from a specified filter hook.
    *
    * @param string $tag                the filter hook to which the function to be removed is hooked.
@@ -200,8 +196,6 @@ class Hooks
   }
 
   /**
-   * Remove All Filters
-   *
    * Remove all of the hooks from a filter.
    *
    * @param string $tag      the filter to remove hooks from.
@@ -228,11 +222,10 @@ class Hooks
     return true;
   }
 
-
   /**
-   * Has Filter
-   *
    * Check if any filter has been registered for the given hook.
+   *
+   * Info: Use !== false to check if it's true!
    *
    * @param    string $tag               the name of the filter hook.
    * @param    bool   $function_to_check callback function name to check for. [optional]
@@ -271,8 +264,6 @@ class Hooks
   }
 
   /**
-   * Apply Filters
-   *
    * Call the functions added to a filter hook.
    *
    * Info:  Additional variables passed to the functions hooked to <tt>$tag</tt>.
@@ -342,8 +333,6 @@ class Hooks
   }
 
   /**
-   * Apply Filters Ref Array
-   *
    * Execute functions hooked on a specific filter hook, specifying arguments in an array.
    *
    * @param    string $tag  The name of the filter hook.
@@ -407,8 +396,6 @@ class Hooks
    */
 
   /**
-   * Add Action
-   *
    * Hooks a function on to a specific action.
    *
    * @param    string  $tag             The name of the action to which the
@@ -432,9 +419,9 @@ class Hooks
   }
 
   /**
-   * Has Action
-   *
    * Check if any action has been registered for a hook.
+   *
+   * Info: Use !== false to check if it's true!
    *
    * @param    string   $tag               The name of the action hook.
    * @param bool|string $function_to_check (optional)
@@ -458,8 +445,6 @@ class Hooks
   }
 
   /**
-   * Remove Action
-   *
    * Removes a function from a specified action hook.
    *
    * @param string $tag                the action hook to which the function to be removed is hooked.
@@ -474,8 +459,6 @@ class Hooks
   }
 
   /**
-   * Remove All Actions
-   *
    * Remove all of the hooks from an action.
    *
    * @param string $tag      the action to remove hooks from.
@@ -489,15 +472,13 @@ class Hooks
   }
 
   /**
-   * Do Action
-   *
    * Execute functions hooked on a specific action hook.
    *
    * @param    string $tag     The name of the action to be executed.
    * @param    mixed  $arg     ,.. Optional additional arguments which are passed on
    *                           to the functions hooked to the action.
    *
-   * @return   null            Will return null if $tag does not exist in $filter array
+   * @return   bool            Will return false if $tag does not exist in $filter array
    * @access   public
    * @since    1.0.0
    */
@@ -525,7 +506,7 @@ class Hooks
         array_pop($this->current_filter);
       }
 
-      return;
+      return false;
     }
 
     if (!isset($this->filters['all'])) {
@@ -534,7 +515,15 @@ class Hooks
 
     $args = array();
 
-    if (is_array($arg) && 1 == count($arg) && isset($arg[0]) && is_object($arg[0])) {
+    if (
+        is_array($arg)
+        &&
+        isset($arg[0])
+        &&
+        is_object($arg[0])
+        &&
+        1 == count($arg)
+    ) {
       $args[] =& $arg[0];
     } else {
       $args[] = $arg;
@@ -569,17 +558,17 @@ class Hooks
     } while (next($this->filters[$tag]) !== false);
 
     array_pop($this->current_filter);
+
+    return true;
   }
 
   /**
-   * Do Action Ref Array
-   *
    * Execute functions hooked on a specific action hook, specifying arguments in an array.
    *
    * @param    string $tag  The name of the action to be executed.
    * @param    array  $args The arguments supplied to the functions hooked to <tt>$tag</tt>
    *
-   * @return   null            Will return null if $tag does not exist in $filter array
+   * @return   bool            Will return false if $tag does not exist in $filter array
    * @access   public
    * @since    1.0.0
    */
@@ -607,7 +596,7 @@ class Hooks
         array_pop($this->current_filter);
       }
 
-      return;
+      return false;
     }
 
     if (!isset($this->filters['all'])) {
@@ -637,11 +626,11 @@ class Hooks
     } while (next($this->filters[$tag]) !== false);
 
     array_pop($this->current_filter);
+
+    return true;
   }
 
   /**
-   * Did Action
-   *
    * Retrieve the number of times an action has fired.
    *
    * @param    string $tag The name of the action hook.
@@ -664,8 +653,6 @@ class Hooks
    */
 
   /**
-   * Current Filter
-   *
    * Retrieve the name of the current filter or action.
    *
    * @param    void
@@ -680,8 +667,6 @@ class Hooks
   }
 
   /**
-   * Build Unique ID
-   *
    * Build Unique ID for storage and retrieval.
    *
    * @param    string $function Used for creating unique id
@@ -813,8 +798,6 @@ class Hooks
   }
 
   /**
-   * Clear all shortcodes.
-   *
    * This function is simple, it clears all of the shortcode tags by replacing the
    * shortcodes by a empty array. This is actually a very efficient method
    * for removing all shortcodes.
@@ -1019,7 +1002,7 @@ class Hooks
           $atts[strtolower($m[3])] = stripcslashes($m[4]);
         } elseif (!empty($m[5])) {
           $atts[strtolower($m[5])] = stripcslashes($m[6]);
-        } elseif (isset($m[7]) && strlen($m[7])) {
+        } elseif (isset($m[7]) && $m[7] !== '') {
           $atts[] = stripcslashes($m[7]);
         } elseif (isset($m[8])) {
           $atts[] = stripcslashes($m[8]);
@@ -1114,7 +1097,7 @@ class Hooks
   }
 
   /**
-   * strip shortcode tag
+   * Strip shortcode by tag.
    *
    * @access private
    *
