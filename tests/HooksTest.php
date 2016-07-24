@@ -184,7 +184,7 @@ class HooksTest extends PHPUnit_Framework_TestCase
     self::assertSame(false, $hooks->do_action('notExistingAction'));
     self::assertSame('Foo', $hooks->apply_filters('notExistingFilter', 'Foo')); // unmodified value
 
-    self::assertSame(true, $hooks->do_action('testAction', (object)['foo' => 'bar']));
+    self::assertSame(true, $hooks->do_action('testAction', (object)array('foo' => 'bar')));
     self::assertSame(true, $hooks->do_action('testAction', 'param1', 'param2', 'param3', 'param4'));
     self::assertSame(true, $hooks->do_action_ref_array('testAction', array('test')));
     self::assertSame('foo', $hooks->apply_filters('testFilter', 'Foo'));
