@@ -158,32 +158,32 @@ class HooksTest extends PHPUnit_Framework_TestCase
     self::assertSame(true, $hooks->remove_all_actions('testAction'));
 
     self::assertSame(false, $hooks->do_action('testAction'));
-    self::assertSame(false, $hooks->do_action_ref_array('testNotExistingAction', []));
+    self::assertSame(false, $hooks->do_action_ref_array('testNotExistingAction', array()));
     self::assertSame('Foo', $hooks->apply_filters('testFilter', 'Foo'));
 
-    self::assertSame(false, $hooks->do_action_ref_array('testAction', ['test']));
-    self::assertSame('Foo', $hooks->apply_filters_ref_array('testFilter', ['Foo']));
+    self::assertSame(false, $hooks->do_action_ref_array('testAction', array('test')));
+    self::assertSame('Foo', $hooks->apply_filters_ref_array('testFilter', array('Foo')));
 
-    $mock = $this->getMock('stdClass', ['doSomeAction', 'applySomeFilter']);
+    $mock = $this->getMock('stdClass', array('doSomeAction', 'applySomeFilter'));
     $mock->expects(self::exactly(4))->method('doSomeAction');
     $mock->expects(self::exactly(10))->method('applySomeFilter')->willReturn('foo');
 
-    self::assertSame(true, $hooks->add_action('testAction', [$mock, 'doSomeAction']));
-    self::assertSame(true, $hooks->add_filter('testFilter', [$mock, 'applySomeFilter']));
+    self::assertSame(true, $hooks->add_action('testAction', array($mock, 'doSomeAction')));
+    self::assertSame(true, $hooks->add_filter('testFilter', array($mock, 'applySomeFilter')));
 
     self::assertSame(true, $hooks->do_action('testAction'));
     self::assertSame('foo', $hooks->apply_filters('testFilter', 'Foo'));
 
-    self::assertSame(true, $hooks->add_filter('all', [$mock, 'applySomeFilter']));
+    self::assertSame(true, $hooks->add_filter('all', array($mock, 'applySomeFilter')));
 
     self::assertSame(false, $hooks->do_action('notExistingAction'));
     self::assertSame('Foo', $hooks->apply_filters('notExistingFilter', 'Foo')); // unmodified value
 
     self::assertSame(true, $hooks->do_action('testAction', (object)['foo' => 'bar']));
     self::assertSame(true, $hooks->do_action('testAction', 'param1', 'param2', 'param3', 'param4'));
-    self::assertSame(true, $hooks->do_action_ref_array('testAction', ['test']));
+    self::assertSame(true, $hooks->do_action_ref_array('testAction', array('test')));
     self::assertSame('foo', $hooks->apply_filters('testFilter', 'Foo'));
-    self::assertSame('foo', $hooks->apply_filters_ref_array('testFilter', ['Foo']));
+    self::assertSame('foo', $hooks->apply_filters_ref_array('testFilter', array('Foo')));
   }
 
   /**
