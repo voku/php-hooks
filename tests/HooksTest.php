@@ -75,6 +75,9 @@ class HooksTest extends PHPUnit_Framework_TestCase
     self::assertSame(true, $hooks->remove_all_filters('testFilter'));
     self::assertSame(true, $hooks->remove_all_actions('testAction'));
 
+    self::assertFalse($hooks->has_filter(''));
+    self::assertFalse($hooks->has_filter(' '));
+    self::assertFalse($hooks->has_filter('testFilter'));
     self::assertFalse($hooks->has_filter('testFilter', 'time'));
     self::assertFalse($hooks->has_action('testAction', 'time'));
 
@@ -171,7 +174,9 @@ class HooksTest extends PHPUnit_Framework_TestCase
     self::assertSame(true, $hooks->add_action('testAction', array($mock, 'doSomeAction')));
     self::assertSame(true, $hooks->add_filter('testFilter', array($mock, 'applySomeFilter')));
 
+    self::assertSame(2, $hooks->did_action('testAction'));
     self::assertSame(true, $hooks->do_action('testAction'));
+    self::assertSame(3, $hooks->did_action('testAction'));
     self::assertSame('foo', $hooks->apply_filters('testFilter', 'Foo'));
 
     self::assertSame(true, $hooks->add_filter('all', array($mock, 'applySomeFilter')));
