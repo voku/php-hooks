@@ -191,6 +191,28 @@ class HooksTest extends PHPUnit_Framework_TestCase
     self::assertSame('foo', $hooks->apply_filters_ref_array('testFilter', array('Foo')));
   }
 
+  public function testRunShortcodeFunctions()
+  {
+    require_once __DIR__ . '/HooksFooBar.php';
+
+    $hooks = Hooks::getInstance();
+
+    self::assertSame(true, $hooks->remove_all_shortcodes());
+
+    self::assertSame('testAction', $hooks->do_shortcode('testAction'));
+
+    $testClass = new HooksFooBar();
+    self::assertSame(true, $hooks->add_shortcode('testAction', array($testClass, 'doSomethingFunction')));
+    self::assertTrue($hooks->shortcode_exists('testAction'));
+
+    self::assertSame('foo bar <li class="">content</li>', $hooks->do_shortcode('foo bar [testAction foo="bar"]content[/testAction]'));
+
+    self::assertSame('foo bar ', $hooks->strip_shortcodes('foo bar [testAction foo="bar"]content[/testAction]'));
+
+    self::assertSame(true, $hooks->remove_shortcode('testAction'));
+    self::assertSame(false, $hooks->shortcode_exists('testAction'));
+  }
+
   /**
    * Sets up the fixture, for example, opens a network connection.
    * This method is called before a test is executed.

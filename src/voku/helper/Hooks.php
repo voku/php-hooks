@@ -777,12 +777,18 @@ class Hooks
    *
    * @param string   $tag  Shortcode tag to be searched in post content.
    * @param callable $func Hook to run when shortcode is found.
+   *
+   * @return bool
    */
   public function add_shortcode($tag, $func)
   {
     if (is_callable($func)) {
       self::$shortcode_tags[$tag] = $func;
+
+      return true;
     }
+
+    return false;
   }
 
   /**
@@ -791,10 +797,18 @@ class Hooks
    * @since 1.0.0
    *
    * @param string $tag shortcode tag to remove hook for.
+   *
+   * @return bool
    */
   public function remove_shortcode($tag)
   {
-    unset(self::$shortcode_tags[$tag]);
+    if (isset(self::$shortcode_tags[$tag])) {
+      unset(self::$shortcode_tags[$tag]);
+
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -803,10 +817,14 @@ class Hooks
    * for removing all shortcodes.
    *
    * @since 1.0.0
+   *
+   * @return bool
    */
   public function remove_all_shortcodes()
   {
     self::$shortcode_tags = array();
+
+    return true;
   }
 
   /**
