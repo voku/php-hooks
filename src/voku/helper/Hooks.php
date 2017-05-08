@@ -716,9 +716,6 @@ class Hooks
    */
   public function _call_all_hook($args)
   {
-    // <-- refactoring "__call_all_hook()" into "_call_all_hook()" is a breaking change (BC),
-    // so we will only deprecate the usage
-
     reset($this->filters['all']);
 
     do {
@@ -746,6 +743,9 @@ class Hooks
    */
   public function __call_all_hook($args)
   {
+    // <-- refactoring "__call_all_hook()" into "_call_all_hook()" is a breaking change (BC),
+    // so we will only deprecate the usage
+
     $this->_call_all_hook($args);
   }
 
