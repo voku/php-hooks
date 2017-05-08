@@ -156,7 +156,7 @@ class Hooks
    */
   public function add_filter($tag, $function_to_add, $priority = self::PRIORITY_NEUTRAL, $include_path = null)
   {
-    $idx = $this->__filter_build_unique_id($function_to_add);
+    $idx = $this->_filter_build_unique_id($function_to_add);
 
     $this->filters[$tag][$priority][$idx] = array(
         'function'     => $function_to_add,
@@ -179,7 +179,7 @@ class Hooks
    */
   public function remove_filter($tag, $function_to_remove, $priority = self::PRIORITY_NEUTRAL)
   {
-    $function_to_remove = $this->__filter_build_unique_id($function_to_remove);
+    $function_to_remove = $this->_filter_build_unique_id($function_to_remove);
 
     if (!isset($this->filters[$tag][$priority][$function_to_remove])) {
       return false;
@@ -250,7 +250,7 @@ class Hooks
       return $has;
     }
 
-    if (!($idx = $this->__filter_build_unique_id($function_to_check))) {
+    if (!($idx = $this->_filter_build_unique_id($function_to_check))) {
       return false;
     }
 
@@ -268,10 +268,10 @@ class Hooks
    *
    * Info:  Additional variables passed to the functions hooked to <tt>$tag</tt>.
    *
-   * @param    string $tag   The name of the filter hook.
-   * @param    mixed  $value The value on which the filters hooked to <tt>$tag</tt> are applied on.
+   * @param    string|array $tag   The name of the filter hook.
+   * @param    mixed        $value The value on which the filters hooked to <tt>$tag</tt> are applied on.
    *
-   * @return   mixed              The filtered value after all hooked functions are applied to it.
+   * @return   mixed               The filtered value after all hooked functions are applied to it.
    * @access   public
    * @since    1.0.0
    */
@@ -283,7 +283,7 @@ class Hooks
     if (isset($this->filters['all'])) {
       $this->current_filter[] = $tag;
       $args = func_get_args();
-      $this->__call_all_hook($args);
+      $this->_call_all_hook($args);
     }
 
     if (!isset($this->filters[$tag])) {
@@ -349,7 +349,7 @@ class Hooks
     if (isset($this->filters['all'])) {
       $this->current_filter[] = $tag;
       $all_args = func_get_args();
-      $this->__call_all_hook($all_args);
+      $this->_call_all_hook($all_args);
     }
 
     if (!isset($this->filters[$tag])) {
@@ -498,7 +498,7 @@ class Hooks
     if (isset($this->filters['all'])) {
       $this->current_filter[] = $tag;
       $all_args = func_get_args();
-      $this->__call_all_hook($all_args);
+      $this->_call_all_hook($all_args);
     }
 
     if (!isset($this->filters[$tag])) {
@@ -588,7 +588,7 @@ class Hooks
     if (isset($this->filters['all'])) {
       $this->current_filter[] = $tag;
       $all_args = func_get_args();
-      $this->__call_all_hook($all_args);
+      $this->_call_all_hook($all_args);
     }
 
     if (!isset($this->filters[$tag])) {
@@ -669,7 +669,7 @@ class Hooks
   /**
    * Build Unique ID for storage and retrieval.
    *
-   * @param    string $function Used for creating unique id
+   * @param    string|array $function  Used for creating unique id
    *
    * @return   string|bool             Unique ID for usage as array key or false if
    *                                   $priority === false and $function is an
@@ -677,7 +677,7 @@ class Hooks
    * @access   private
    * @since    1.0.0
    */
-  private function __filter_build_unique_id($function)
+  private function _filter_build_unique_id($function)
   {
     if (is_string($function)) {
       return $function;
@@ -696,7 +696,9 @@ class Hooks
     if (is_object($function[0])) {
       // Object Class Calling
       return spl_object_hash($function[0]) . $function[1];
-    } elseif (is_string($function[0])) {
+    }
+
+    if (is_string($function[0])) {
       // Static Calling
       return $function[0] . $function[1];
     }
@@ -712,8 +714,11 @@ class Hooks
    * @access   public
    * @since    1.0.0
    */
-  public function __call_all_hook($args)
+  public function _call_all_hook($args)
   {
+    // <-- refactoring "__call_all_hook()" into "_call_all_hook()" is a breaking change (BC),
+    // so we will only deprecate the usage
+
     reset($this->filters['all']);
 
     do {
@@ -729,6 +734,19 @@ class Hooks
         }
       }
     } while (next($this->filters['all']) !== false);
+  }
+
+  /** @noinspection MagicMethodsValidityInspection */
+  /**
+   * @param array $args
+   *
+   * @deprecated use "this->_call_all_hook()"
+   * @access   public
+   * @since    1.0.0
+   */
+  public function __call_all_hook($args)
+  {
+    $this->_call_all_hook($args);
   }
 
   /**
@@ -806,9 +824,9 @@ class Hooks
       unset(self::$shortcode_tags[$tag]);
 
       return true;
-    } else {
-      return false;
     }
+
+    return false;
   }
 
   /**
@@ -866,7 +884,9 @@ class Hooks
       foreach ($matches as $shortcode) {
         if ($tag === $shortcode[2]) {
           return true;
-        } elseif (!empty($shortcode[5]) && $this->has_shortcode($shortcode[5], $tag)) {
+        }
+
+        if (!empty($shortcode[5]) && $this->has_shortcode($shortcode[5], $tag)) {
           return true;
         }
       }
@@ -900,7 +920,7 @@ class Hooks
         "/$pattern/s",
         array(
             $this,
-            '__do_shortcode_tag',
+            '_do_shortcode_tag',
         ),
         $content
     );
@@ -975,7 +995,7 @@ class Hooks
    *
    * @return mixed False on failure.
    */
-  private function __do_shortcode_tag($m)
+  private function _do_shortcode_tag($m)
   {
     // allow [[foo]] syntax for escaping a tag
     if ($m[1] == '[' && $m[6] == ']') {
@@ -985,13 +1005,13 @@ class Hooks
     $tag = $m[2];
     $attr = $this->shortcode_parse_atts($m[3]);
 
+    // enclosing tag - extra parameter
     if (isset($m[5])) {
-      // enclosing tag - extra parameter
       return $m[1] . call_user_func(self::$shortcode_tags[$tag], $attr, $m[5], $tag) . $m[6];
-    } else {
-      // self-closing tag
-      return $m[1] . call_user_func(self::$shortcode_tags[$tag], $attr, null, $tag) . $m[6];
     }
+
+    // self-closing tag
+    return $m[1] . call_user_func(self::$shortcode_tags[$tag], $attr, null, $tag) . $m[6];
   }
 
   /**
@@ -1108,7 +1128,7 @@ class Hooks
         "/$pattern/s",
         array(
             $this,
-            '__strip_shortcode_tag',
+            '_strip_shortcode_tag',
         ),
         $content
     );
@@ -1123,7 +1143,7 @@ class Hooks
    *
    * @return string
    */
-  private function __strip_shortcode_tag($m)
+  private function _strip_shortcode_tag($m)
   {
     // allow [[foo]] syntax for escaping a tag
     if ($m[1] == '[' && $m[6] == ']') {
