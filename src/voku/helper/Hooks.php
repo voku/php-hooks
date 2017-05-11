@@ -125,25 +125,25 @@ class Hooks
   /**
    * Adds Hooks to a function or method to a specific filter action.
    *
-   * @param    string  $tag                <p>
-   *                                       The name of the filter to hook the
-   *                                       {@link $function_to_add} to.
-   *                                       </p>
-   * @param    string  $function_to_add    <p>
-   *                                       The name of the function to be called
-   *                                       when the filter is applied.
-   *                                       </p>
-   * @param    integer $priority           <p>
-   *                                       [optional] Used to specify the order in
-   *                                       which the functions associated with a
-   *                                       particular action are executed (default: 50).
-   *                                       Lower numbers correspond with earlier execution,
-   *                                       and functions with the same priority are executed
-   *                                       in the order in which they were added to the action.
-   *                                       </p>
-   * @param string     $include_path       <p>
-   *                                       [optional] File to include before executing the callback.
-   *                                       </p>
+   * @param    string       $tag             <p>
+   *                                         The name of the filter to hook the
+   *                                         {@link $function_to_add} to.
+   *                                         </p>
+   * @param    string|array $function_to_add <p>
+   *                                         The name of the function to be called
+   *                                         when the filter is applied.
+   *                                         </p>
+   * @param    integer      $priority        <p>
+   *                                         [optional] Used to specify the order in
+   *                                         which the functions associated with a
+   *                                         particular action are executed (default: 50).
+   *                                         Lower numbers correspond with earlier execution,
+   *                                         and functions with the same priority are executed
+   *                                         in the order in which they were added to the action.
+   *                                         </p>
+   * @param string          $include_path    <p>
+   *                                         [optional] File to include before executing the callback.
+   *                                         </p>
    *
    * @return boolean
    */
