@@ -35,7 +35,7 @@ class HooksShortcodeTest extends \PHPUnit\Framework\TestCase
 
     extract(
         $hooks->shortcode_atts(
-            array(
+            [
                 'autoplay',
                 'noControls',
                 'list'   => null,
@@ -45,7 +45,7 @@ class HooksShortcodeTest extends \PHPUnit\Framework\TestCase
                 'color'  => 'red',
                 'theme'  => 'dark',
                 'start'  => 0,
-            ),
+            ],
             $attrs
         ),
         EXTR_OVERWRITE
@@ -73,7 +73,7 @@ class HooksShortcodeTest extends \PHPUnit\Framework\TestCase
   public function testShortcode()
   {
     $hooks = Hooks::getInstance();
-    $hooks->add_shortcode('youtube', array($this, 'parse_youtube'));
+    $hooks->add_shortcode('youtube', [$this, 'parse_youtube']);
 
     $default_content = '[youtube id=iCUV3iv9xOs color=white theme=light]';
     $parsed_content = $hooks->do_shortcode($default_content);

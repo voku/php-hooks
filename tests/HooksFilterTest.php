@@ -18,9 +18,11 @@ class HooksFilterTest extends \PHPUnit\Framework\TestCase
    */
   public function testFilter()
   {
-    $this->hooks->add_filter('foo', function ($content) {
-        return '<b>' . $content . '</b>';
-    });
+    $this->hooks->add_filter(
+        'foo', function ($content) {
+      return '<b>' . $content . '</b>';
+    }
+    );
 
     self::assertSame('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
   }

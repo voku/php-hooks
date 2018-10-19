@@ -48,8 +48,8 @@ class HooksTest extends \PHPUnit\Framework\TestCase
    */
   public function testHooks()
   {
-    $this->hooks->add_filter('test', array($this, 'hookTestString_1'));
-    $this->hooks->add_filter('test', array($this, 'hookTestString_2'));
+    $this->hooks->add_filter('test', [$this, 'hookTestString_1']);
+    $this->hooks->add_filter('test', [$this, 'hookTestString_2']);
 
     $lall = $this->hooks->apply_filters('test', '');
 
@@ -161,33 +161,34 @@ class HooksTest extends \PHPUnit\Framework\TestCase
     self::assertSame(true, $hooks->remove_all_actions('testAction'));
 
     self::assertSame(false, $hooks->do_action('testAction'));
-    self::assertSame(false, $hooks->do_action_ref_array('testNotExistingAction', array()));
+    self::assertSame(false, $hooks->do_action_ref_array('testNotExistingAction', []));
     self::assertSame('Foo', $hooks->apply_filters('testFilter', 'Foo'));
 
-    self::assertSame(false, $hooks->do_action_ref_array('testAction', array('test')));
-    self::assertSame('Foo', $hooks->apply_filters_ref_array('testFilter', array('Foo')));
+    self::assertSame(false, $hooks->do_action_ref_array('testAction', ['test']));
+    self::assertSame('Foo', $hooks->apply_filters_ref_array('testFilter', ['Foo']));
 
-    $mock = $this->getMockBuilder('stdClass')->setMethods( array('doSomeAction', 'applySomeFilter'))->getMock();$mock->expects(self::exactly(4))->method('doSomeAction');
+    $mock = $this->getMockBuilder('stdClass')->setMethods(['doSomeAction', 'applySomeFilter'])->getMock();
+    $mock->expects(self::exactly(4))->method('doSomeAction');
     $mock->expects(self::exactly(10))->method('applySomeFilter')->willReturn('foo');
 
-    self::assertSame(true, $hooks->add_action('testAction', array($mock, 'doSomeAction')));
-    self::assertSame(true, $hooks->add_filter('testFilter', array($mock, 'applySomeFilter')));
+    self::assertSame(true, $hooks->add_action('testAction', [$mock, 'doSomeAction']));
+    self::assertSame(true, $hooks->add_filter('testFilter', [$mock, 'applySomeFilter']));
 
     self::assertSame(8, $hooks->did_action('testAction'));
     self::assertSame(true, $hooks->do_action('testAction'));
     self::assertSame(9, $hooks->did_action('testAction'));
     self::assertSame('foo', $hooks->apply_filters('testFilter', 'Foo'));
 
-    self::assertSame(true, $hooks->add_filter('all', array($mock, 'applySomeFilter')));
+    self::assertSame(true, $hooks->add_filter('all', [$mock, 'applySomeFilter']));
 
     self::assertSame(false, $hooks->do_action('notExistingAction'));
     self::assertSame('Foo', $hooks->apply_filters('notExistingFilter', 'Foo')); // unmodified value
 
-    self::assertSame(true, $hooks->do_action('testAction', (object)array('foo' => 'bar')));
+    self::assertSame(true, $hooks->do_action('testAction', (object)['foo' => 'bar']));
     self::assertSame(true, $hooks->do_action('testAction', 'param1', 'param2', 'param3', 'param4'));
-    self::assertSame(true, $hooks->do_action_ref_array('testAction', array('test')));
+    self::assertSame(true, $hooks->do_action_ref_array('testAction', ['test']));
     self::assertSame('foo', $hooks->apply_filters('testFilter', 'Foo'));
-    self::assertSame('foo', $hooks->apply_filters_ref_array('testFilter', array('Foo')));
+    self::assertSame('foo', $hooks->apply_filters_ref_array('testFilter', ['Foo']));
   }
 
   public function testRunShortcodeFunctions()
@@ -201,7 +202,7 @@ class HooksTest extends \PHPUnit\Framework\TestCase
     self::assertSame('testAction', $hooks->do_shortcode('testAction'));
 
     $testClass = new HooksFooBar();
-    self::assertSame(true, $hooks->add_shortcode('testAction', array($testClass, 'doSomethingFunction')));
+    self::assertSame(true, $hooks->add_shortcode('testAction', [$testClass, 'doSomethingFunction']));
     self::assertTrue($hooks->shortcode_exists('testAction'));
 
     self::assertSame('foo bar <li class="">content</li>', $hooks->do_shortcode('foo bar [testAction foo="bar"]content[/testAction]'));

@@ -20,9 +20,12 @@ class HooksActionTest extends \PHPUnit\Framework\TestCase
   {
     $done = false;
 
-    $this->hooks->add_action('bar', function () use (&$done) {
-        $done = true;
-    });
+    $this->hooks->add_action(
+        'bar',
+        function () use (&$done) {
+          $done = true;
+        }
+    );
 
     $this->hooks->do_action('bar');
 

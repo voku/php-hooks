@@ -20,9 +20,9 @@ class HooksFooBar extends \PHPUnit\Framework\TestCase
 
     extract(
         \voku\helper\Hooks::getInstance()->shortcode_atts(
-            array(
+            [
                 'foo',
-            ),
+            ],
             $attrs
         ),
         EXTR_OVERWRITE
