@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use voku\helper\Hooks;
 
 /**
  * Class HooksTest
  */
-class HooksTest extends \PHPUnit\Framework\TestCase
+class HooksStrictTest extends \PHPUnit\Framework\TestCase
 {
 
   /**
@@ -48,10 +50,10 @@ class HooksTest extends \PHPUnit\Framework\TestCase
    */
   public function testHooks()
   {
-    $this->hooks->add_filter('test', array($this, 'hookTestString_1'));
-    $this->hooks->add_filter('test', array($this, 'hookTestString_2'));
+    $this->hooks->add_filter('test_strict', array($this, 'hookTestString_1'));
+    $this->hooks->add_filter('test_strict', array($this, 'hookTestString_2'));
 
-    $lall = $this->hooks->apply_filters('test', '');
+    $lall = $this->hooks->apply_filters('test_strict', '');
 
     self::assertSame($lall, $this->testString_1 . $this->testString_2);
   }
@@ -63,9 +65,9 @@ class HooksTest extends \PHPUnit\Framework\TestCase
    */
   public function testHooksInstance()
   {
-    $lall = $this->hooks->apply_filters('test', '');
+    $lall = $this->hooks->apply_filters('test_strict', '');
 
-    self::assertSame($lall, $this->testString_1 . $this->testString_2);
+    self::assertSame($this->testString_1 . $this->testString_2, $lall, );
   }
 
   public function testHasFunctions()
@@ -167,15 +169,16 @@ class HooksTest extends \PHPUnit\Framework\TestCase
     self::assertSame(false, $hooks->do_action_ref_array('testAction', array('test')));
     self::assertSame('Foo', $hooks->apply_filters_ref_array('testFilter', array('Foo')));
 
-    $mock = $this->getMockBuilder('stdClass')->setMethods( array('doSomeAction', 'applySomeFilter'))->getMock();$mock->expects(self::exactly(4))->method('doSomeAction');
+    $mock = $this->getMockBuilder('stdClass')->setMethods( array('doSomeAction', 'applySomeFilter'))->getMock();
+    $mock->expects(self::exactly(4))->method('doSomeAction');
     $mock->expects(self::exactly(10))->method('applySomeFilter')->willReturn('foo');
 
     self::assertSame(true, $hooks->add_action('testAction', array($mock, 'doSomeAction')));
     self::assertSame(true, $hooks->add_filter('testFilter', array($mock, 'applySomeFilter')));
 
-    self::assertSame(8, $hooks->did_action('testAction'));
+    self::assertSame(2, $hooks->did_action('testAction'));
     self::assertSame(true, $hooks->do_action('testAction'));
-    self::assertSame(9, $hooks->did_action('testAction'));
+    self::assertSame(3, $hooks->did_action('testAction'));
     self::assertSame('foo', $hooks->apply_filters('testFilter', 'Foo'));
 
     self::assertSame(true, $hooks->add_filter('all', array($mock, 'applySomeFilter')));

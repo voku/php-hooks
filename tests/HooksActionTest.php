@@ -5,7 +5,7 @@ use voku\helper\Hooks;
 /**
  * Class HooksTest
  */
-class HooksActionTest extends PHPUnit_Framework_TestCase
+class HooksActionTest extends \PHPUnit\Framework\TestCase
 {
 
   /**

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use voku\helper\Hooks;
 
 /**
  * Class HooksTest
  */
-class HooksShortcodeTest extends \PHPUnit\Framework\TestCase
+class HooksShortcodeStrictTest extends \PHPUnit\Framework\TestCase
 {
 
   /**

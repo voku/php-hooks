@@ -3,7 +3,7 @@
 /**
  * Class HooksFooBar
  */
-class HooksFooBar extends PHPUnit_Framework_TestCase
+class HooksFooBar extends \PHPUnit\Framework\TestCase
 {
   protected $foo = '';
 

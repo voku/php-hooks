@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace voku\helper;
 
 /**
@@ -15,7 +17,7 @@ namespace voku\helper;
  * of the code comes from there.
  * </p>
  *
- * @copyright   2011 - 2017
+ * @copyright   2011 - 2018
  *
  * @author      Ohad Raz <admin@bainternet.info>
  * @link        http://en.bainternet.info
@@ -44,35 +46,35 @@ class Hooks
    *
    * @var array
    */
-  protected $filters = array();
+  protected $filters = [];
 
   /**
    * Merged Filters
    *
    * @var array
    */
-  protected $merged_filters = array();
+  protected $merged_filters = [];
 
   /**
    * Actions
    *
    * @var array
    */
-  protected $actions = array();
+  protected $actions = [];
 
   /**
    * Current Filter - holds the name of the current filter
    *
    * @var array
    */
-  protected $current_filter = array();
+  protected $current_filter = [];
 
   /**
    * Container for storing shortcode tags and their hook to call for the shortcode
    *
    * @var array
    */
-  public static $shortcode_tags = array();
+  public static $shortcode_tags = [];
 
   /**
    * Default priority
@@ -107,7 +109,7 @@ class Hooks
    *
    * @return Hooks
    */
-  public static function getInstance()
+  public static function getInstance(): Hooks
   {
     static $instance;
 
@@ -125,36 +127,36 @@ class Hooks
   /**
    * Adds Hooks to a function or method to a specific filter action.
    *
-   * @param    string       $tag             <p>
-   *                                         The name of the filter to hook the
-   *                                         {@link $function_to_add} to.
-   *                                         </p>
-   * @param    string|array $function_to_add <p>
-   *                                         The name of the function to be called
-   *                                         when the filter is applied.
-   *                                         </p>
-   * @param    integer      $priority        <p>
-   *                                         [optional] Used to specify the order in
-   *                                         which the functions associated with a
-   *                                         particular action are executed (default: 50).
-   *                                         Lower numbers correspond with earlier execution,
-   *                                         and functions with the same priority are executed
-   *                                         in the order in which they were added to the action.
-   *                                         </p>
-   * @param string          $include_path    <p>
-   *                                         [optional] File to include before executing the callback.
-   *                                         </p>
+   * @param    string              $tag             <p>
+   *                                                The name of the filter to hook the
+   *                                                {@link $function_to_add} to.
+   *                                                </p>
+   * @param    string|array|object $function_to_add <p>
+   *                                                The name of the function to be called
+   *                                                when the filter is applied.
+   *                                                </p>
+   * @param    int                 $priority        <p>
+   *                                                [optional] Used to specify the order in
+   *                                                which the functions associated with a
+   *                                                particular action are executed (default: 50).
+   *                                                Lower numbers correspond with earlier execution,
+   *                                                and functions with the same priority are executed
+   *                                                in the order in which they were added to the action.
+   *                                                </p>
+   * @param string                 $include_path    <p>
+   *                                                [optional] File to include before executing the callback.
+   *                                                </p>
    *
-   * @return boolean
+   * @return bool
    */
-  public function add_filter($tag, $function_to_add, $priority = self::PRIORITY_NEUTRAL, $include_path = null)
+  public function add_filter(string $tag, $function_to_add, int $priority = self::PRIORITY_NEUTRAL, string $include_path = null): bool
   {
     $idx = $this->_filter_build_unique_id($function_to_add);
 
-    $this->filters[$tag][$priority][$idx] = array(
+    $this->filters[$tag][$priority][$idx] = [
         'function'     => $function_to_add,
-        'include_path' => is_string($include_path) ? $include_path : null,
-    );
+        'include_path' => \is_string($include_path) ? $include_path : null,
+    ];
 
     unset($this->merged_filters[$tag]);
 
@@ -164,13 +166,14 @@ class Hooks
   /**
    * Removes a function from a specified filter hook.
    *
-   * @param string $tag                <p>The filter hook to which the function to be removed is hooked.</p>
-   * @param mixed  $function_to_remove <p>The name of the function which should be removed.</p>
-   * @param int    $priority           <p>[optional] The priority of the function (default: 50).</p>
+   * @param string              $tag                <p>The filter hook to which the function to be removed is
+   *                                                hooked.</p>
+   * @param string|array|object $function_to_remove <p>The name of the function which should be removed.</p>
+   * @param int                 $priority           <p>[optional] The priority of the function (default: 50).</p>
    *
    * @return bool
    */
-  public function remove_filter($tag, $function_to_remove, $priority = self::PRIORITY_NEUTRAL)
+  public function remove_filter(string $tag, $function_to_remove, int $priority = self::PRIORITY_NEUTRAL): bool
   {
     $function_to_remove = $this->_filter_build_unique_id($function_to_remove);
 
@@ -191,12 +194,12 @@ class Hooks
   /**
    * Remove all of the hooks from a filter.
    *
-   * @param string $tag      <p>The filter to remove hooks from.</p>
-   * @param bool   $priority <p>The priority number to remove.</p>
+   * @param string    $tag      <p>The filter to remove hooks from.</p>
+   * @param false|int $priority <p>The priority number to remove.</p>
    *
    * @return bool
    */
-  public function remove_all_filters($tag, $priority = false)
+  public function remove_all_filters(string $tag, $priority = false): bool
   {
     if (isset($this->merged_filters[$tag])) {
       unset($this->merged_filters[$tag]);
@@ -223,8 +226,8 @@ class Hooks
    * <strong>INFO:</strong> Use !== false to check if it's true!
    * </p>
    *
-   * @param    string $tag               <p>The name of the filter hook.</p>
-   * @param    bool   $function_to_check <p>[optional] Callback function name to check for </p>
+   * @param    string       $tag               <p>The name of the filter hook.</p>
+   * @param    false|string $function_to_check <p>[optional] Callback function name to check for </p>
    *
    * @return   mixed                       <p>
    *                                       If {@link $function_to_check} is omitted,
@@ -239,7 +242,7 @@ class Hooks
    *                                       (e.g.) 0, so use the === operator for testing the return value.
    *                                       </p>
    */
-  public function has_filter($tag, $function_to_check = false)
+  public function has_filter(string $tag, $function_to_check = false)
   {
     $has = isset($this->filters[$tag]);
     if (false === $function_to_check || !$has) {
@@ -250,7 +253,7 @@ class Hooks
       return false;
     }
 
-    foreach ((array)array_keys($this->filters[$tag]) as $priority) {
+    foreach (\array_keys($this->filters[$tag]) as $priority) {
       if (isset($this->filters[$tag][$priority][$idx])) {
         return $priority;
       }
@@ -267,25 +270,25 @@ class Hooks
    * <strong>INFO:</strong> Additional variables passed to the functions hooked to <tt>$tag</tt>.
    * </p>
    *
-   * @param    string|array $tag   <p>The name of the filter hook.</p>
-   * @param    mixed        $value <p>The value on which the filters hooked to <tt>$tag</tt> are applied on.</p>
+   * @param    string $tag   <p>The name of the filter hook.</p>
+   * @param    mixed  $value <p>The value on which the filters hooked to <tt>$tag</tt> are applied on.</p>
    *
    * @return   mixed               <p>The filtered value after all hooked functions are applied to it.</p>
    */
-  public function apply_filters($tag, $value)
+  public function apply_filters(string $tag, $value)
   {
-    $args = array();
+    $args = [];
 
     // Do 'all' actions first
     if (isset($this->filters['all'])) {
       $this->current_filter[] = $tag;
-      $args = func_get_args();
+      $args = \func_get_args();
       $this->_call_all_hook($args);
     }
 
     if (!isset($this->filters[$tag])) {
       if (isset($this->filters['all'])) {
-        array_pop($this->current_filter);
+        \array_pop($this->current_filter);
       }
 
       return $value;
@@ -297,20 +300,20 @@ class Hooks
 
     // Sort
     if (!isset($this->merged_filters[$tag])) {
-      ksort($this->filters[$tag]);
+      \ksort($this->filters[$tag]);
       $this->merged_filters[$tag] = true;
     }
 
-    reset($this->filters[$tag]);
+    \reset($this->filters[$tag]);
 
     if (empty($args)) {
-      $args = func_get_args();
+      $args = \func_get_args();
     }
 
-    array_shift($args);
+    \array_shift($args);
 
     do {
-      foreach ((array)current($this->filters[$tag]) as $the_) {
+      foreach ((array)\current($this->filters[$tag]) as $the_) {
         if (null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
@@ -319,12 +322,12 @@ class Hooks
           }
 
           $args[0] = $value;
-          $value = call_user_func_array($the_['function'], $args);
+          $value = \call_user_func_array($the_['function'], $args);
         }
       }
-    } while (next($this->filters[$tag]) !== false);
+    } while (\next($this->filters[$tag]) !== false);
 
-    array_pop($this->current_filter);
+    \array_pop($this->current_filter);
 
     return $value;
   }
@@ -337,18 +340,18 @@ class Hooks
    *
    * @return   mixed        <p>The filtered value after all hooked functions are applied to it.</p>
    */
-  public function apply_filters_ref_array($tag, $args)
+  public function apply_filters_ref_array(string $tag, array $args)
   {
     // Do 'all' actions first
     if (isset($this->filters['all'])) {
       $this->current_filter[] = $tag;
-      $all_args = func_get_args();
+      $all_args = \func_get_args();
       $this->_call_all_hook($all_args);
     }
 
     if (!isset($this->filters[$tag])) {
       if (isset($this->filters['all'])) {
-        array_pop($this->current_filter);
+        \array_pop($this->current_filter);
       }
 
       return $args[0];
@@ -360,14 +363,14 @@ class Hooks
 
     // Sort
     if (!isset($this->merged_filters[$tag])) {
-      ksort($this->filters[$tag]);
+      \ksort($this->filters[$tag]);
       $this->merged_filters[$tag] = true;
     }
 
-    reset($this->filters[$tag]);
+    \reset($this->filters[$tag]);
 
     do {
-      foreach ((array)current($this->filters[$tag]) as $the_) {
+      foreach ((array)\current($this->filters[$tag]) as $the_) {
         if (null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
@@ -375,12 +378,12 @@ class Hooks
             include_once $the_['include_path'];
           }
 
-          $args[0] = call_user_func_array($the_['function'], $args);
+          $args[0] = \call_user_func_array($the_['function'], $args);
         }
       }
-    } while (next($this->filters[$tag]) !== false);
+    } while (\next($this->filters[$tag]) !== false);
 
-    array_pop($this->current_filter);
+    \array_pop($this->current_filter);
 
     return $args[0];
   }
@@ -388,24 +391,29 @@ class Hooks
   /**
    * Hooks a function on to a specific action.
    *
-   * @param    string  $tag             <p>
-   *                                    The name of the action to which the
-   *                                    <tt>$function_to_add</tt> is hooked.
-   *                                    </p>
-   * @param    string  $function_to_add <p>The name of the function you wish to be called.</p>
-   * @param    integer $priority        <p>
-   *                                    [optional] Used to specify the order in which
-   *                                    the functions associated with a particular
-   *                                    action are executed (default: 50).
-   *                                    Lower numbers correspond with earlier execution,
-   *                                    and functions with the same priority are executed
-   *                                    in the order in which they were added to the action.
-   *                                    </p>
-   * @param     string $include_path    <p>[optional] File to include before executing the callback.</p>
+   * @param    string       $tag              <p>
+   *                                          The name of the action to which the
+   *                                          <tt>$function_to_add</tt> is hooked.
+   *                                          </p>
+   * @param    string|array $function_to_add  <p>The name of the function you wish to be called.</p>
+   * @param    int          $priority         <p>
+   *                                          [optional] Used to specify the order in which
+   *                                          the functions associated with a particular
+   *                                          action are executed (default: 50).
+   *                                          Lower numbers correspond with earlier execution,
+   *                                          and functions with the same priority are executed
+   *                                          in the order in which they were added to the action.
+   *                                          </p>
+   * @param     string      $include_path     <p>[optional] File to include before executing the callback.</p>
    *
    * @return bool
    */
-  public function add_action($tag, $function_to_add, $priority = self::PRIORITY_NEUTRAL, $include_path = null)
+  public function add_action(
+      string $tag,
+      $function_to_add,
+      int $priority = self::PRIORITY_NEUTRAL,
+      string $include_path = null
+  ): bool
   {
     return $this->add_filter($tag, $function_to_add, $priority, $include_path);
   }
@@ -418,8 +426,8 @@ class Hooks
    * <strong>INFO:</strong> Use !== false to check if it's true!
    * </p>
    *
-   * @param    string   $tag               <p>The name of the action hook.</p>
-   * @param bool|string $function_to_check <p>[optional]</p>
+   * @param    string    $tag               <p>The name of the action hook.</p>
+   * @param false|string $function_to_check <p>[optional]</p>
    *
    * @return   mixed                       <p>
    *                                       If <tt>$function_to_check</tt> is omitted,
@@ -434,7 +442,7 @@ class Hooks
    *                                       so use the === operator for testing the return value.
    *                                       </p>
    */
-  public function has_action($tag, $function_to_check = false)
+  public function has_action(string $tag, $function_to_check = false)
   {
     return $this->has_filter($tag, $function_to_check);
   }
@@ -448,7 +456,7 @@ class Hooks
    *
    * @return bool <p>Whether the function is removed.</p>
    */
-  public function remove_action($tag, $function_to_remove, $priority = self::PRIORITY_NEUTRAL)
+  public function remove_action(string $tag, $function_to_remove, int $priority = self::PRIORITY_NEUTRAL): bool
   {
     return $this->remove_filter($tag, $function_to_remove, $priority);
   }
@@ -456,12 +464,12 @@ class Hooks
   /**
    * Remove all of the hooks from an action.
    *
-   * @param string $tag      <p>The action to remove hooks from.</p>
-   * @param bool   $priority <p>The priority number to remove them from.</p>
+   * @param string    $tag      <p>The action to remove hooks from.</p>
+   * @param false|int $priority <p>The priority number to remove them from.</p>
    *
    * @return bool
    */
-  public function remove_all_actions($tag, $priority = false)
+  public function remove_all_actions(string $tag, $priority = false): bool
   {
     return $this->remove_all_filters($tag, $priority);
   }
@@ -477,28 +485,28 @@ class Hooks
    *
    * @return   bool            <p>Will return false if $tag does not exist in $filter array.</p>
    */
-  public function do_action($tag, $arg = '')
+  public function do_action(string $tag, $arg = ''): bool
   {
-    if (!is_array($this->actions)) {
-      $this->actions = array();
+    if (!\is_array($this->actions)) {
+      $this->actions = [];
     }
 
-    if (!isset($this->actions[$tag])) {
-      $this->actions[$tag] = 1;
-    } else {
+    if (isset($this->actions[$tag])) {
       ++$this->actions[$tag];
+    } else {
+      $this->actions[$tag] = 1;
     }
 
     // Do 'all' actions first
     if (isset($this->filters['all'])) {
       $this->current_filter[] = $tag;
-      $all_args = func_get_args();
+      $all_args = \func_get_args();
       $this->_call_all_hook($all_args);
     }
 
     if (!isset($this->filters[$tag])) {
       if (isset($this->filters['all'])) {
-        array_pop($this->current_filter);
+        \array_pop($this->current_filter);
       }
 
       return false;
@@ -508,38 +516,38 @@ class Hooks
       $this->current_filter[] = $tag;
     }
 
-    $args = array();
+    $args = [];
 
     if (
-        is_array($arg)
+        \is_array($arg)
         &&
         isset($arg[0])
         &&
-        is_object($arg[0])
+        \is_object($arg[0])
         &&
-        1 == count($arg)
+        1 == \count($arg)
     ) {
       $args[] =& $arg[0];
     } else {
       $args[] = $arg;
     }
 
-    $numArgs = func_num_args();
+    $numArgs = \func_num_args();
 
     for ($a = 2; $a < $numArgs; $a++) {
-      $args[] = func_get_arg($a);
+      $args[] = \func_get_arg($a);
     }
 
     // Sort
     if (!isset($this->merged_filters[$tag])) {
-      ksort($this->filters[$tag]);
+      \ksort($this->filters[$tag]);
       $this->merged_filters[$tag] = true;
     }
 
-    reset($this->filters[$tag]);
+    \reset($this->filters[$tag]);
 
     do {
-      foreach ((array)current($this->filters[$tag]) as $the_) {
+      foreach ((array)\current($this->filters[$tag]) as $the_) {
         if (null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
@@ -547,12 +555,12 @@ class Hooks
             include_once $the_['include_path'];
           }
 
-          call_user_func_array($the_['function'], $args);
+          \call_user_func_array($the_['function'], $args);
         }
       }
-    } while (next($this->filters[$tag]) !== false);
+    } while (\next($this->filters[$tag]) !== false);
 
-    array_pop($this->current_filter);
+    \array_pop($this->current_filter);
 
     return true;
   }
@@ -565,28 +573,28 @@ class Hooks
    *
    * @return   bool         <p>Will return false if $tag does not exist in $filter array.</p>
    */
-  public function do_action_ref_array($tag, $args)
+  public function do_action_ref_array(string $tag, array $args): bool
   {
-    if (!is_array($this->actions)) {
-      $this->actions = array();
+    if (!\is_array($this->actions)) {
+      $this->actions = [];
     }
 
-    if (!isset($this->actions[$tag])) {
-      $this->actions[$tag] = 1;
-    } else {
+    if (isset($this->actions[$tag])) {
       ++$this->actions[$tag];
+    } else {
+      $this->actions[$tag] = 1;
     }
 
     // Do 'all' actions first
     if (isset($this->filters['all'])) {
       $this->current_filter[] = $tag;
-      $all_args = func_get_args();
+      $all_args = \func_get_args();
       $this->_call_all_hook($all_args);
     }
 
     if (!isset($this->filters[$tag])) {
       if (isset($this->filters['all'])) {
-        array_pop($this->current_filter);
+        \array_pop($this->current_filter);
       }
 
       return false;
@@ -597,15 +605,15 @@ class Hooks
     }
 
     // Sort
-    if (!isset($merged_filters[$tag])) {
-      ksort($this->filters[$tag]);
-      $merged_filters[$tag] = true;
+    if (!isset($this->merged_filters[$tag])) {
+      \ksort($this->filters[$tag]);
+      $this->merged_filters[$tag] = true;
     }
 
-    reset($this->filters[$tag]);
+    \reset($this->filters[$tag]);
 
     do {
-      foreach ((array)current($this->filters[$tag]) as $the_) {
+      foreach ((array)\current($this->filters[$tag]) as $the_) {
         if (null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
@@ -613,12 +621,12 @@ class Hooks
             include_once $the_['include_path'];
           }
 
-          call_user_func_array($the_['function'], $args);
+          \call_user_func_array($the_['function'], $args);
         }
       }
-    } while (next($this->filters[$tag]) !== false);
+    } while (\next($this->filters[$tag]) !== false);
 
-    array_pop($this->current_filter);
+    \array_pop($this->current_filter);
 
     return true;
   }
@@ -628,11 +636,11 @@ class Hooks
    *
    * @param string $tag <p>The name of the action hook.</p>
    *
-   * @return integer <p>The number of times action hook <tt>$tag</tt> is fired.</p>
+   * @return int <p>The number of times action hook <tt>$tag</tt> is fired.</p>
    */
-  public function did_action($tag)
+  public function did_action(string $tag): int
   {
-    if (!is_array($this->actions) || !isset($this->actions[$tag])) {
+    if (!\is_array($this->actions) || !isset($this->actions[$tag])) {
       return 0;
     }
 
@@ -644,17 +652,17 @@ class Hooks
    *
    * @return string <p>Hook name of the current filter or action.</p>
    */
-  public function current_filter()
+  public function current_filter(): string
   {
-    return end($this->current_filter);
+    return \end($this->current_filter);
   }
 
   /**
    * Build Unique ID for storage and retrieval.
    *
-   * @param    string|array $function <p>Used for creating unique id.</p>
+   * @param    string|array|object $function <p>Used for creating unique id.</p>
    *
-   * @return   string|bool             <p>
+   * @return   string|false            <p>
    *                                   Unique ID for usage as array key or false if
    *                                   $priority === false and $function is an
    *                                   object reference, and it does not already have a unique id.
@@ -662,26 +670,26 @@ class Hooks
    */
   private function _filter_build_unique_id($function)
   {
-    if (is_string($function)) {
+    if (\is_string($function)) {
       return $function;
     }
 
-    if (is_object($function)) {
+    if (\is_object($function)) {
       // Closures are currently implemented as objects
-      $function = array(
+      $function = [
           $function,
           '',
-      );
+      ];
     } else {
       $function = (array)$function;
     }
 
-    if (is_object($function[0])) {
+    if (\is_object($function[0])) {
       // Object Class Calling
-      return spl_object_hash($function[0]) . $function[1];
+      return \spl_object_hash($function[0]) . $function[1];
     }
 
-    if (is_string($function[0])) {
+    if (\is_string($function[0])) {
       // Static Calling
       return $function[0] . $function[1];
     }
@@ -694,12 +702,12 @@ class Hooks
    *
    * @param array $args
    */
-  public function _call_all_hook($args)
+  public function _call_all_hook(array $args)
   {
-    reset($this->filters['all']);
+    \reset($this->filters['all']);
 
     do {
-      foreach ((array)current($this->filters['all']) as $the_) {
+      foreach ((array)\current($this->filters['all']) as $the_) {
         if (null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
@@ -707,10 +715,10 @@ class Hooks
             include_once $the_['include_path'];
           }
 
-          call_user_func_array($the_['function'], $args);
+          \call_user_func_array($the_['function'], $args);
         }
       }
-    } while (next($this->filters['all']) !== false);
+    } while (\next($this->filters['all']) !== false);
   }
 
   /** @noinspection MagicMethodsValidityInspection */
@@ -719,7 +727,7 @@ class Hooks
    *
    * @deprecated use "this->_call_all_hook()"
    */
-  public function __call_all_hook($args)
+  public function __call_all_hook(array $args)
   {
     // <-- refactoring "__call_all_hook()" into "_call_all_hook()" is a breaking change (BC),
     // so we will only deprecate the usage
@@ -779,9 +787,9 @@ class Hooks
    *
    * @return bool
    */
-  public function add_shortcode($tag, $func)
+  public function add_shortcode(string $tag, $func): bool
   {
-    if (is_callable($func)) {
+    if (\is_callable($func)) {
       self::$shortcode_tags[$tag] = $func;
 
       return true;
@@ -797,7 +805,7 @@ class Hooks
    *
    * @return bool
    */
-  public function remove_shortcode($tag)
+  public function remove_shortcode(string $tag): bool
   {
     if (isset(self::$shortcode_tags[$tag])) {
       unset(self::$shortcode_tags[$tag]);
@@ -815,9 +823,9 @@ class Hooks
    *
    * @return bool
    */
-  public function remove_all_shortcodes()
+  public function remove_all_shortcodes(): bool
   {
-    self::$shortcode_tags = array();
+    self::$shortcode_tags = [];
 
     return true;
   }
@@ -827,11 +835,11 @@ class Hooks
    *
    * @param string $tag
    *
-   * @return boolean
+   * @return bool
    */
-  public function shortcode_exists($tag)
+  public function shortcode_exists(string $tag): bool
   {
-    return array_key_exists($tag, self::$shortcode_tags);
+    return \array_key_exists($tag, self::$shortcode_tags);
   }
 
   /**
@@ -842,14 +850,14 @@ class Hooks
    *
    * @return bool
    */
-  public function has_shortcode($content, $tag)
+  public function has_shortcode(string $content, string $tag): bool
   {
-    if (false === strpos($content, '[')) {
+    if (false === \strpos($content, '[')) {
       return false;
     }
 
     if ($this->shortcode_exists($tag)) {
-      preg_match_all('/' . $this->get_shortcode_regex() . '/s', $content, $matches, PREG_SET_ORDER);
+      \preg_match_all('/' . $this->get_shortcode_regex() . '/s', $content, $matches, PREG_SET_ORDER);
       if (empty($matches)) {
         return false;
       }
@@ -882,20 +890,20 @@ class Hooks
    *
    * @return string <p>Content with shortcodes filtered out.</p>
    */
-  public function do_shortcode($content)
+  public function do_shortcode(string $content): string
   {
-    if (empty(self::$shortcode_tags) || !is_array(self::$shortcode_tags)) {
+    if (empty(self::$shortcode_tags) || !\is_array(self::$shortcode_tags)) {
       return $content;
     }
 
     $pattern = $this->get_shortcode_regex();
 
-    return preg_replace_callback(
+    return \preg_replace_callback(
         "/$pattern/s",
-        array(
+        [
             $this,
             '_do_shortcode_tag',
-        ),
+        ],
         $content
     );
   }
@@ -922,10 +930,10 @@ class Hooks
    *
    * @return string The shortcode search regular expression
    */
-  public function get_shortcode_regex()
+  public function get_shortcode_regex(): string
   {
-    $tagnames = array_keys(self::$shortcode_tags);
-    $tagregexp = implode('|', array_map('preg_quote', $tagnames));
+    $tagnames = \array_keys(self::$shortcode_tags);
+    $tagregexp = \implode('|', \array_map('preg_quote', $tagnames));
 
     // WARNING! Do not change this regex without changing __do_shortcode_tag() and __strip_shortcode_tag()
     // Also, see shortcode_unautop() and shortcode.js.
@@ -969,11 +977,11 @@ class Hooks
    *
    * @return mixed <p><strong>false</strong> on failure</p>
    */
-  private function _do_shortcode_tag($m)
+  private function _do_shortcode_tag(array $m)
   {
     // allow [[foo]] syntax for escaping a tag
     if ($m[1] == '[' && $m[6] == ']') {
-      return substr($m[0], 1, -1);
+      return \substr($m[0], 1, -1);
     }
 
     $tag = $m[2];
@@ -981,11 +989,11 @@ class Hooks
 
     // enclosing tag - extra parameter
     if (isset($m[5])) {
-      return $m[1] . call_user_func(self::$shortcode_tags[$tag], $attr, $m[5], $tag) . $m[6];
+      return $m[1] . \call_user_func(self::$shortcode_tags[$tag], $attr, $m[5], $tag) . $m[6];
     }
 
     // self-closing tag
-    return $m[1] . call_user_func(self::$shortcode_tags[$tag], $attr, null, $tag) . $m[6];
+    return $m[1] . \call_user_func(self::$shortcode_tags[$tag], $attr, null, $tag) . $m[6];
   }
 
   /**
@@ -1002,27 +1010,28 @@ class Hooks
    *
    * @return array <p>List of attributes and their value.</p>
    */
-  public function shortcode_parse_atts($text)
+  public function shortcode_parse_atts(string $text): array
   {
-    $atts = array();
+    $atts = [];
     $pattern = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
-    $text = preg_replace("/[\x{00a0}\x{200b}]+/u", ' ', $text);
-    if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
-      foreach ($match as $m) {
+    $text = \preg_replace("/[\x{00a0}\x{200b}]+/u", ' ', $text);
+    $matches = [];
+    if (\preg_match_all($pattern, $text, $matches, PREG_SET_ORDER)) {
+      foreach ($matches as $m) {
         if (!empty($m[1])) {
-          $atts[strtolower($m[1])] = stripcslashes($m[2]);
+          $atts[\strtolower($m[1])] = \stripcslashes($m[2]);
         } elseif (!empty($m[3])) {
-          $atts[strtolower($m[3])] = stripcslashes($m[4]);
+          $atts[\strtolower($m[3])] = \stripcslashes($m[4]);
         } elseif (!empty($m[5])) {
-          $atts[strtolower($m[5])] = stripcslashes($m[6]);
+          $atts[\strtolower($m[5])] = \stripcslashes($m[6]);
         } elseif (isset($m[7]) && $m[7] !== '') {
-          $atts[] = stripcslashes($m[7]);
+          $atts[] = \stripcslashes($m[7]);
         } elseif (isset($m[8])) {
-          $atts[] = stripcslashes($m[8]);
+          $atts[] = \stripcslashes($m[8]);
         }
       }
     } else {
-      $atts = ltrim($text);
+      $atts = \ltrim($text);
     }
 
     return $atts;
@@ -1048,10 +1057,10 @@ class Hooks
    *
    * @return array <p>Combined and filtered attribute list.</p>
    */
-  public function shortcode_atts($pairs, $atts, $shortcode = '')
+  public function shortcode_atts($pairs, $atts, $shortcode = ''): array
   {
     $atts = (array)$atts;
-    $out = array();
+    $out = [];
     foreach ($pairs as $name => $default) {
       if (array_key_exists($name, $atts)) {
         $out[$name] = $atts[$name];
@@ -1059,6 +1068,7 @@ class Hooks
         $out[$name] = $default;
       }
     }
+
     /**
      * Filter a shortcode's default attributes.
      *
@@ -1074,10 +1084,10 @@ class Hooks
      */
     if ($shortcode) {
       $out = $this->apply_filters(
-          array(
-              $this,
-              "shortcode_atts_{$shortcode}",
-          ), $out, $pairs, $atts
+          "shortcode_atts_{$shortcode}",
+          $out,
+          $pairs,
+          $atts
       );
     }
 
@@ -1091,10 +1101,10 @@ class Hooks
    *
    * @return string <p>Content without shortcode tags.</p>
    */
-  public function strip_shortcodes($content)
+  public function strip_shortcodes(string $content): string
   {
 
-    if (empty(self::$shortcode_tags) || !is_array(self::$shortcode_tags)) {
+    if (empty(self::$shortcode_tags) || !\is_array(self::$shortcode_tags)) {
       return $content;
     }
 
@@ -1102,10 +1112,10 @@ class Hooks
 
     return preg_replace_callback(
         "/$pattern/s",
-        array(
+        [
             $this,
             '_strip_shortcode_tag',
-        ),
+        ],
         $content
     );
   }
@@ -1117,7 +1127,7 @@ class Hooks
    *
    * @return string
    */
-  private function _strip_shortcode_tag($m)
+  private function _strip_shortcode_tag(array $m): string
   {
     // allow [[foo]] syntax for escaping a tag
     if ($m[1] == '[' && $m[6] == ']') {

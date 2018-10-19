@@ -27,10 +27,10 @@
     "issues": "https://github.com/voku/php-hooks/issues"
   },
   "require": {
-    "php": ">=5.3.0"
+    "php": ">=7.0.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "4.*"
+    "phpunit/phpunit": "~6.0"
   },
   "autoload": {
     "psr-4": {
