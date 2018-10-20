@@ -109,7 +109,7 @@ class Hooks
    *
    * @return Hooks
    */
-  public static function getInstance(): Hooks
+  public static function getInstance(): self
   {
     static $instance;
 
