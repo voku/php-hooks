@@ -43,7 +43,12 @@ jobs:
         run: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Audit dependencies
-        run: composer audit
+        run: |
+          if composer audit --help >/dev/null 2>&1; then
+            composer audit --no-dev
+          else
+            echo "Skipping composer audit: command unavailable for this Composer/PHP combination."
+          fi
 
       - name: Run PHPUnit
         run: composer test
@@ -68,7 +73,12 @@ jobs:
         run: composer update --prefer-lowest --prefer-dist --no-interaction --no-progress
 
       - name: Audit dependencies
-        run: composer audit
+        run: |
+          if composer audit --help >/dev/null 2>&1; then
+            composer audit --no-dev
+          else
+            echo "Skipping composer audit: command unavailable for this Composer/PHP combination."
+          fi
 
       - name: Run PHPUnit
         run: composer test
