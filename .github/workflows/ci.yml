@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+          - '8.2'
+          - '8.3'
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: shivammathur/setup-php@2.37.0
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Audit dependencies
+        run: composer audit
+
+      - name: Run PHPUnit
+        run: composer test
+
+  lowest-dependencies:
+    name: Lowest dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: shivammathur/setup-php@2.37.0
+        with:
+          php-version: '7.3'
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install lowest supported dependencies
+        run: composer update --prefer-lowest --prefer-dist --no-interaction --no-progress
+
+      - name: Audit dependencies
+        run: composer audit
+
+      - name: Run PHPUnit
+        run: composer test

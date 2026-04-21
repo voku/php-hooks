@@ -169,7 +169,7 @@ class HooksStrictTest extends \PHPUnit\Framework\TestCase
     self::assertSame(false, $hooks->do_action_ref_array('testAction', ['test']));
     self::assertSame('Foo', $hooks->apply_filters_ref_array('testFilter', ['Foo']));
 
-    $mock = $this->getMockBuilder('stdClass')->setMethods(['doSomeAction', 'applySomeFilter'])->getMock();
+    $mock = $this->getMockBuilder(\stdClass::class)->addMethods(['doSomeAction', 'applySomeFilter'])->getMock();
     $mock->expects(self::exactly(4))->method('doSomeAction');
     $mock->expects(self::exactly(10))->method('applySomeFilter')->willReturn('foo');
 
@@ -219,7 +219,7 @@ class HooksStrictTest extends \PHPUnit\Framework\TestCase
    * Sets up the fixture, for example, opens a network connection.
    * This method is called before a test is executed.
    */
-  protected function setUp()
+  protected function setUp(): void
   {
     $this->hooks = Hooks::getInstance();
   }

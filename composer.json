@@ -10,7 +10,7 @@
   ],
   "type": "library",
   "homepage": "http://github.com/voku/php-hooks/",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-only",
   "authors": [
     {
       "name": "Ohad Raz",
@@ -30,11 +30,14 @@
     "php": ">=7.0.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "~6.0"
+    "phpunit/phpunit": "^9.6.33"
   },
   "autoload": {
     "psr-4": {
       "voku\\helper\\": "src/voku/helper/"
     }
+  },
+  "scripts": {
+    "test": "phpunit -c phpunit.xml"
   }
 }
