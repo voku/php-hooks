@@ -93,7 +93,7 @@ class Hooks
   /**
    * Prevent the object from being cloned.
    */
-  protected function __clone(): void
+  protected function __clone()
   {
   }
 
