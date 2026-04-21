@@ -314,7 +314,7 @@ class Hooks
 
     do {
       foreach ((array)\current($this->filters[$tag]) as $the_) {
-        if (null !== $the_['function']) {
+        if (\is_array($the_) && null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
             /** @noinspection PhpIncludeInspection */
@@ -371,7 +371,7 @@ class Hooks
 
     do {
       foreach ((array)\current($this->filters[$tag]) as $the_) {
-        if (null !== $the_['function']) {
+        if (\is_array($the_) && null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
             /** @noinspection PhpIncludeInspection */
@@ -548,7 +548,7 @@ class Hooks
 
     do {
       foreach ((array)\current($this->filters[$tag]) as $the_) {
-        if (null !== $the_['function']) {
+        if (\is_array($the_) && null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
             /** @noinspection PhpIncludeInspection */
@@ -614,7 +614,7 @@ class Hooks
 
     do {
       foreach ((array)\current($this->filters[$tag]) as $the_) {
-        if (null !== $the_['function']) {
+        if (\is_array($the_) && null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
             /** @noinspection PhpIncludeInspection */
@@ -708,7 +708,7 @@ class Hooks
 
     do {
       foreach ((array)\current($this->filters['all']) as $the_) {
-        if (null !== $the_['function']) {
+        if (\is_array($the_) && null !== $the_['function']) {
 
           if (null !== $the_['include_path']) {
             /** @noinspection PhpIncludeInspection */
