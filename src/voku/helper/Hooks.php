@@ -93,14 +93,14 @@ class Hooks
   /**
    * Prevent the object from being cloned.
    */
-  protected function __clone()
+  protected function __clone(): void
   {
   }
 
   /**
    * Avoid serialization.
    */
-  public function __wakeup()
+  public function __wakeup(): void
   {
   }
 
@@ -702,7 +702,7 @@ class Hooks
    *
    * @param array $args
    */
-  public function _call_all_hook(array $args)
+  public function _call_all_hook(array $args): void
   {
     \reset($this->filters['all']);
 
@@ -727,7 +727,7 @@ class Hooks
    *
    * @deprecated use "this->_call_all_hook()"
    */
-  public function __call_all_hook(array $args)
+  public function __call_all_hook(array $args): void
   {
     // <-- refactoring "__call_all_hook()" into "_call_all_hook()" is a breaking change (BC),
     // so we will only deprecate the usage
