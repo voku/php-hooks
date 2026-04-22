@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - '7.1'
+          - '7.2'
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+          - '8.2'
+          - '8.3'
+          - '8.4'
+          - '8.5'
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: shivammathur/setup-php@2.37.0
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Audit dependencies
+        run: |
+          if composer audit --help >/dev/null 2>&1; then
+            composer audit --no-dev
+          else
+            echo "Skipping composer audit: command unavailable for this Composer/PHP combination."
+          fi
+
+      - name: Run PHPUnit
+        run: composer test
+
+  lowest-dependencies:
+    name: Lowest dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: shivammathur/setup-php@2.37.0
+        with:
+          php-version: '7.1'
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install lowest supported dependencies
+        run: composer update --prefer-lowest --prefer-dist --no-interaction --no-progress
+
+      - name: Audit dependencies
+        run: |
+          if composer audit --help >/dev/null 2>&1; then
+            composer audit --no-dev
+          else
+            echo "Skipping composer audit: command unavailable for this Composer/PHP combination."
+          fi
+
+      - name: Run PHPUnit
+        run: composer test

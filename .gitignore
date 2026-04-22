@@ -69,3 +69,4 @@ $RECYCLE.BIN/
 # composer
 vendor
 composer.lock
+.phpunit.result.cache

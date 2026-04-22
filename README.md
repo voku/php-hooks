@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/voku/php-hooks.svg?branch=master)](https://travis-ci.org/voku/php-hooks)
+[![CI](https://github.com/voku/php-hooks/actions/workflows/ci.yml/badge.svg)](https://github.com/voku/php-hooks/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/voku/php-hooks/badge.svg?branch=master)](https://coveralls.io/github/voku/php-hooks?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/voku/php-hooks/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/voku/php-hooks/?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6f6b0c6c9f4e4bc8ac0c9159fd86adb2)](https://www.codacy.com/app/voku/php-hooks)
