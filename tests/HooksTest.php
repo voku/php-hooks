@@ -167,7 +167,7 @@ class HooksTest extends \PHPUnit\Framework\TestCase
     self::assertSame(false, $hooks->do_action_ref_array('testAction', ['test']));
     self::assertSame('Foo', $hooks->apply_filters_ref_array('testFilter', ['Foo']));
 
-    $mock = $this->getMockBuilder(\stdClass::class)->addMethods(['doSomeAction', 'applySomeFilter'])->getMock();
+    $mock = $this->createMockWithMethods(['doSomeAction', 'applySomeFilter']);
     $mock->expects(self::exactly(4))->method('doSomeAction');
     $mock->expects(self::exactly(10))->method('applySomeFilter')->willReturn('foo');
 
@@ -220,6 +220,24 @@ class HooksTest extends \PHPUnit\Framework\TestCase
   protected function setUp(): void
   {
     $this->hooks = Hooks::getInstance();
+  }
+
+  /**
+   * @param string[] $methods
+   *
+   * @return \PHPUnit\Framework\MockObject\MockObject|object
+   */
+  protected function createMockWithMethods(array $methods)
+  {
+    $builder = $this->getMockBuilder(\stdClass::class);
+
+    if (\method_exists($builder, 'addMethods')) {
+      $builder = $builder->addMethods($methods);
+    } else {
+      $builder = $builder->setMethods($methods);
+    }
+
+    return $builder->getMock();
   }
 
 }
