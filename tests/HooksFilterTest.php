@@ -7,33 +7,32 @@ use voku\helper\Hooks;
  */
 class HooksFilterTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @var Hooks
+     */
+    protected $hooks;
 
-  /**
-   * @var Hooks
-   */
-  protected $hooks;
+    /**
+     * test filter
+     */
+    public function testFilter()
+    {
+        $this->hooks->add_filter(
+            'foo',
+            function ($content) {
+                return '<b>' . $content . '</b>';
+            }
+        );
 
-  /**
-   * test filter
-   */
-  public function testFilter()
-  {
-    $this->hooks->add_filter(
-        'foo', function ($content) {
-      return '<b>' . $content . '</b>';
+        self::assertSame('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
     }
-    );
 
-    self::assertSame('<b>Hello world</b>', $this->hooks->apply_filters('foo', 'Hello world'));
-  }
-
-  /**
-   * Sets up the fixture, for example, opens a network connection.
-   * This method is called before a test is executed.
-   */
-  protected function setUp(): void
-  {
-    $this->hooks = Hooks::getInstance();
-  }
-
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp(): void
+    {
+        $this->hooks = Hooks::getInstance();
+    }
 }
