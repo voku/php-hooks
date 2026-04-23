@@ -55,6 +55,30 @@ and you output will be: `<div id="extra_header">this came from a hooked function
 
 PS: you can also use method from a class for a hook e.g.: `$hooks->add_action('header_action', array($this, 'echo_this_in_header_via_method');`
 
+Important Note: Shared Hook Namespace
+======================================
+
+Actions and filters in this library share the **same internal registry**, keyed by hook name (tag). This means that if you register an action and a filter with the same name, **both will be triggered** regardless of whether you call `do_action()` or `apply_filters()`.
+
+Example:
+
+```php
+<?php
+
+$hooks = Hooks::getInstance();
+
+$hooks->add_action('myHook', function () {
+    echo 'action triggered';
+});
+
+$hooks->do_action('myHook');      // triggers the callback → "action triggered"
+$hooks->apply_filters('myHook', null); // also triggers the callback → "action triggered"
+```
+
+To avoid unexpected cross-triggering, use distinct names for actions and filters (e.g. prefix them: `action_myHook` vs `filter_myHook`).
+
+See the [`testSharedNamespaceBetweenActionsAndFilters`](tests/HooksTest.php) test for a working example of this behaviour.
+
 Methods
 =======
 **ACTIONS:**
