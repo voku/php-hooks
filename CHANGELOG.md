@@ -5,22 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-- Explain shared hook namespace in README and add tests demonstrating the behavior
-- Add GitHub Actions CI workflow and refresh PHPUnit setup
-- Add Renovate configuration for automated dependency updates
+## [0.2.12] - 2026-04-24
 
 ### Changed
 - Bump PHP minimum requirement to 7.1, add void return types, expand CI matrix to PHP 7.1–8.5
-- Remove obsolete badges from README.md
-- Tighten GitHub Actions workflow token permissions
 
 ### Fixed
 - Fix PHP 8+ warning: trying to access array offset on false in do...while loops (PR #17)
-- Fix same-name trigger handling (PR #20)
-- Fix StyleCI configuration (remove risky `self_accessor` fixer)
 - Fix CI audit step compatibility across PHP 7.1–8.5 matrix
 - Fix PHPUnit 7 mock builder API usage in tests
 - Resolve CI failures: braces in StyleCI config, `__clone` void return, broadened PHPUnit constraint
