@@ -193,6 +193,28 @@ class HooksStrictTest extends \PHPUnit\Framework\TestCase
     self::assertSame('foo', $hooks->apply_filters_ref_array('testFilter', ['Foo']));
   }
 
+  public function testSharedNamespaceBetweenActionsAndFilters()
+  {
+    $hooks = Hooks::getInstance();
+
+    $hooks->remove_all_filters('sharedHook');
+    $hooks->remove_all_actions('sharedHook');
+
+    $called = 0;
+    $hooks->add_action('sharedHook', function () use (&$called) {
+      ++$called;
+    });
+
+    // do_action triggers the registered action callback
+    $hooks->do_action('sharedHook');
+    self::assertSame(1, $called);
+
+    // apply_filters with the same tag name also triggers the callback,
+    // because actions and filters share the same internal hook registry.
+    $hooks->apply_filters('sharedHook', null);
+    self::assertSame(2, $called);
+  }
+
   public function testRunShortcodeFunctions()
   {
     require_once __DIR__ . '/HooksFooBar.php';
