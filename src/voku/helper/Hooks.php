@@ -1002,13 +1002,13 @@ class Hooks
      *
      * @param string $text
      *
-     * @return array <p>List of attributes and their value.</p>
+     * @return array<int|string, string> List of attributes and their value.
      */
     public function shortcode_parse_atts(string $text): array
     {
         $atts = [];
         $pattern = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
-        $text = \preg_replace("/[\x{00a0}\x{200b}]+/u", ' ', $text);
+        $text = \preg_replace("/[\x{00a0}\x{200b}]+/u", ' ', $text) ?? $text;
         $matches = [];
         if (\preg_match_all($pattern, $text, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
@@ -1025,7 +1025,7 @@ class Hooks
                 }
             }
         } else {
-            $atts = \ltrim($text);
+            $atts[] = \ltrim($text);
         }
 
         return $atts;
@@ -1045,11 +1045,11 @@ class Hooks
      * removed from the final returned list.
      * </p>
      *
-     * @param array  $pairs     <p>Entire list of supported attributes and their defaults.</p>
-     * @param array  $atts      <p>User defined attributes in shortcode tag.</p>
-     * @param string $shortcode <p>[optional] The name of the shortcode, provided for context to enable filtering.</p>
+     * @param array<int|string, mixed> $pairs     Entire list of supported attributes and their defaults.
+     * @param array<int|string, mixed> $atts      User defined attributes in shortcode tag.
+     * @param string                   $shortcode [optional] The name of the shortcode, provided for context to enable filtering.
      *
-     * @return array <p>Combined and filtered attribute list.</p>
+     * @return array<int|string, mixed> Combined and filtered attribute list.
      */
     public function shortcode_atts($pairs, $atts, $shortcode = ''): array
     {

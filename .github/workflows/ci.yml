@@ -53,6 +53,10 @@ jobs:
       - name: Run PHPUnit
         run: composer test
 
+      - name: Run PHPStan
+        if: matrix.php == '7.1'
+        run: composer phpstan
+
   lowest-dependencies:
     name: Lowest dependencies
     runs-on: ubuntu-latest
