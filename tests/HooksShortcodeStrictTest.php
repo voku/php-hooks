@@ -82,6 +82,12 @@ class HooksShortcodeStrictTest extends \PHPUnit\Framework\TestCase
         self::assertSame('<iframe type="text/html" frameborder=0 width=640 height=390 src="http://www.youtube.com/embed/iCUV3iv9xOs?color=white&theme=light&autoplay=0&controls=1&start=0" />', $parsed_content);
     }
 
+    public function testShortcodeParseAttsReturnsArrayForBareAttributes()
+    {
+        self::assertSame(['single-attr'], $this->hooks->shortcode_parse_atts(' single-attr'));
+        self::assertSame(['foo' => 'bar'], $this->hooks->shortcode_parse_atts('foo="bar"'));
+    }
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.

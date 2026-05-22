@@ -1,0 +1,11 @@
+parameters:
+  level: 1
+  paths:
+    - src/voku/helper/Hooks.php
+  ignoreErrors:
+    - '#type has no value type specified in iterable type array#'
+    - '#Method .* has no return type specified#'
+    - '#PHPDoc tag @return contains unresolvable type#'
+    - '%Parameter #1 \$position of function func_get_arg expects int<0, max>, int given%'
+    - '#Unreachable statement - code above always terminates#'
+    - '#Method .* should return string but returns string\|null#'
