@@ -47,7 +47,12 @@ jobs:
         run: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Audit dependencies, including development tools
-        run: composer audit
+        run: |
+          if composer audit --help >/dev/null 2>&1; then
+            composer audit
+          else
+            echo '::notice::Composer audit unavailable on this legacy PHP version; modern PHP matrix jobs run the audit.'
+          fi
 
       - name: Run PHPUnit
         run: composer test
@@ -79,7 +84,12 @@ jobs:
         run: composer update --prefer-lowest --prefer-dist --no-interaction --no-progress
 
       - name: Audit dependencies, including development tools
-        run: composer audit
+        run: |
+          if composer audit --help >/dev/null 2>&1; then
+            composer audit
+          else
+            echo '::notice::Composer audit unavailable on this legacy PHP version; modern PHP matrix jobs run the audit.'
+          fi
 
       - name: Run PHPUnit
         run: composer test
