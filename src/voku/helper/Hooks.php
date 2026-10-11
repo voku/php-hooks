@@ -143,13 +143,13 @@ class Hooks
      *                                                and functions with the same priority are executed
      *                                                in the order in which they were added to the action.
      *                                                </p>
-     * @param string                 $include_path    <p>
+     * @param string|null                 $include_path    <p>
      *                                                [optional] File to include before executing the callback.
      *                                                </p>
      *
      * @return bool
      */
-    public function add_filter(string $tag, $function_to_add, int $priority = self::PRIORITY_NEUTRAL, string $include_path = null): bool
+    public function add_filter(string $tag, $function_to_add, int $priority = self::PRIORITY_NEUTRAL, ?string $include_path = null): bool
     {
         $idx = $this->_filter_build_unique_id($function_to_add);
 
@@ -402,7 +402,7 @@ class Hooks
      *                                          and functions with the same priority are executed
      *                                          in the order in which they were added to the action.
      *                                          </p>
-     * @param     string      $include_path     <p>[optional] File to include before executing the callback.</p>
+     * @param     string|null      $include_path     <p>[optional] File to include before executing the callback.</p>
      *
      * @return bool
      */
@@ -410,7 +410,7 @@ class Hooks
         string $tag,
         $function_to_add,
         int $priority = self::PRIORITY_NEUTRAL,
-        string $include_path = null
+        ?string $include_path = null
     ): bool {
         return $this->add_filter($tag, $function_to_add, $priority, $include_path);
     }
