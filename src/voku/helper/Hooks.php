@@ -143,7 +143,7 @@ class Hooks
      *                                                and functions with the same priority are executed
      *                                                in the order in which they were added to the action.
      *                                                </p>
-     * @param string                 $include_path    <p>
+     * @param string|null                 $include_path    <p>
      *                                                [optional] File to include before executing the callback.
      *                                                </p>
      *
@@ -402,7 +402,7 @@ class Hooks
      *                                          and functions with the same priority are executed
      *                                          in the order in which they were added to the action.
      *                                          </p>
-     * @param     string      $include_path     <p>[optional] File to include before executing the callback.</p>
+     * @param     string|null      $include_path     <p>[optional] File to include before executing the callback.</p>
      *
      * @return bool
      */
