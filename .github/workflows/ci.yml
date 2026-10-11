@@ -39,22 +39,21 @@ jobs:
       - name: Validate composer.json
         run: composer validate --strict
 
+      - name: Exclude unsupported PHPStan from PHP 7.1 test installs
+        if: matrix.php == '7.1'
+        run: composer remove --dev --no-update --no-interaction phpstan/phpstan
+
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction --no-progress
 
-      - name: Audit dependencies
-        run: |
-          if composer audit --help >/dev/null 2>&1; then
-            composer audit --no-dev
-          else
-            echo "Skipping composer audit: command unavailable for this Composer/PHP combination."
-          fi
+      - name: Audit dependencies, including development tools
+        run: composer audit
 
       - name: Run PHPUnit
         run: composer test
 
       - name: Run PHPStan
-        if: matrix.php == '7.1'
+        if: matrix.php == '8.5'
         run: composer phpstan
 
   lowest-dependencies:
@@ -73,16 +72,14 @@ jobs:
       - name: Validate composer.json
         run: composer validate --strict
 
+      - name: Exclude unsupported PHPStan from PHP 7.1 lowest install
+        run: composer remove --dev --no-update --no-interaction phpstan/phpstan
+
       - name: Install lowest supported dependencies
         run: composer update --prefer-lowest --prefer-dist --no-interaction --no-progress
 
-      - name: Audit dependencies
-        run: |
-          if composer audit --help >/dev/null 2>&1; then
-            composer audit --no-dev
-          else
-            echo "Skipping composer audit: command unavailable for this Composer/PHP combination."
-          fi
+      - name: Audit dependencies, including development tools
+        run: composer audit
 
       - name: Run PHPUnit
         run: composer test
